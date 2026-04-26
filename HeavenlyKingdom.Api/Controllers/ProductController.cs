@@ -1,4 +1,5 @@
-﻿using HeavenlyKingdom.BusinessLogic.Interfaces;
+﻿using HeavenlyKingdom.Api.Filters;
+using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpPost]
+        [AdminFilter]
         public async Task<IActionResult> Create(CreateProductDto dto)
         {
             var created = await _service.CreateAsync(dto);
@@ -30,6 +32,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [AdminFilter]
         public async Task<IActionResult> Update(int id, UpdateProductDto dto)
         {
             var result = await _service.UpdateAsync(id, dto);
@@ -37,6 +40,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [AdminFilter]
         public async Task<IActionResult> Delete(int id) =>
             await _service.DeleteAsync(id) ? NoContent() : NotFound();
     }
