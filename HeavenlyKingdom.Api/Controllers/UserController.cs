@@ -1,5 +1,5 @@
-﻿using HeavenlyKingdom.Domain.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using HeavenlyKingdom.BusinessLogic.Interfaces;
+using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeavenlyKingdom.Api.Controllers
@@ -8,50 +8,53 @@ namespace HeavenlyKingdom.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private static List<User> _users = new();
-        private static int _nextId = 1;
+        private readonly IUserService _userService;
+        public UserController(IUserService userService) => _userService = userService;
 
         [HttpGet("all")]
-        public ActionResult<List<User>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_users);
+            var users = await _userService.GetAllAsync();
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<User> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var user = _users.FirstOrDefault(u => u.Id == id);
-            if (user == null)
-                return NotFound(new {Message = $"User with ID {id} not found"} );
+            var user = await _userService.GetByIdAsync(id);
+            if (user == null) return NotFound(new { Message = $"User {id} not found" });
             return Ok(user);
         }
 
-        [HttpPost]
-        public IActionResult Create([FromBody]User user)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-            user.Id = _nextId++;
-            _users.Add(user);
-            return Created($"/api/user/{user.Id}", user);
+            if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
+                return BadRequest(new { Message = "Username and password are required" });
+
+            var result = await _userService.RegisterAsync(dto);
+            if (result == null) return Conflict(new { Message = "Username already taken" });
+            return Created($"/api/user/{result.Id}", result);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] User updatedUser)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            var existingUser = _users.FirstOrDefault(u => u.Id == id);
-            if (existingUser == null)
-                return NotFound(new {Message = $"User with ID {id} not found"});
-            existingUser.Username = updatedUser.Username;
-            existingUser.Password = updatedUser.Password;
-            return Ok(existingUser);
+            var result = await _userService.LoginAsync(dto);
+            if (result == null) return Unauthorized(new { Message = "Invalid username or password" });
+
+            // Записываем сессию
+            HttpContext.Session.SetString("userId", result.Id.ToString());
+            HttpContext.Session.SetString("isAdmin", result.IsAdmin.ToString().ToLower());
+
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteUser(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var user = _users.FirstOrDefault(u => u.Id == id);
-            if (user == null)
-                return NotFound(new {Message = $"User with ID {id} not found"});
-            _users.Remove(user);
+            var success = await _userService.DeleteAsync(id);
+            if (!success) return NotFound(new { Message = $"User {id} not found" });
             return NoContent();
         }
     }
