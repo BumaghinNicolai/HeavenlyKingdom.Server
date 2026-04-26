@@ -17,11 +17,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IFatherRepository, FatherRepository>();
+builder.Services.AddScoped<ICandleRepository, CandleRepository>();
 
 // Сервисы (BLL)
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFatherService, FatherService>();
+builder.Services.AddScoped<ICandleService, CandleService>();
 
 // AutoMapper — MappingProfile лежит в HeavenlyKingdom.Helpers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -38,12 +44,20 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(2);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors("Frontend");
+app.UseSession();
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())

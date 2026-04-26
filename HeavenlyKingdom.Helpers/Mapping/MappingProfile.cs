@@ -30,6 +30,19 @@ namespace HeavenlyKingdom.Helpers.Mapping
 
             CreateMap<AddToCartDto, CartItem>()
                 .ForMember(d => d.Quantity, o => o.MapFrom(s => s.Qty));
+
+            // User
+            CreateMap<User, UserResponseDto>();
+
+            // Father
+            CreateMap<Father, FatherDto>();
+            CreateMap<CreateFatherDto, Father>();
+            CreateMap<UpdateFatherDto, Father>();
+            
+            // Candle
+            CreateMap<Candle, CandleDto>();
+            CreateMap<CreateCandleDto, Candle>();
+            CreateMap<UpdateCandleDto, Candle>();
         }
     }
 }
