@@ -13,26 +13,28 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-// Репозитории (DAL)
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (DAL)
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFatherRepository, FatherRepository>();
 builder.Services.AddScoped<ICandleRepository, CandleRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
-// Сервисы (BLL)
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (BLL)
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFatherService, FatherService>();
 builder.Services.AddScoped<ICandleService, CandleService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
-// AutoMapper — MappingProfile лежит в HeavenlyKingdom.Helpers
+// AutoMapper пїЅ MappingProfile пїЅпїЅпїЅпїЅпїЅ пїЅ HeavenlyKingdom.Helpers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// CORS для фронта (Vite по умолчанию на 5173)
+// CORS пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (Vite пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 5173)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>

@@ -29,11 +29,11 @@ namespace HeavenlyKingdom.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
-                return BadRequest(new { Message = "Username and password are required" });
+            if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
+                return BadRequest(new { Message = "Email and password are required" });
 
             var result = await _userService.RegisterAsync(dto);
-            if (result == null) return Conflict(new { Message = "Username already taken" });
+            if (result == null) return Conflict(new { Message = "Email already taken" });
             return Created($"/api/user/{result.Id}", result);
         }
 
@@ -41,13 +41,20 @@ namespace HeavenlyKingdom.Api.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var result = await _userService.LoginAsync(dto);
-            if (result == null) return Unauthorized(new { Message = "Invalid username or password" });
+            if (result == null) return Unauthorized(new { Message = "Invalid email or password" });
 
             // Записываем сессию
             HttpContext.Session.SetString("userId", result.Id.ToString());
             HttpContext.Session.SetString("isAdmin", result.IsAdmin.ToString().ToLower());
 
             return Ok(result);
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok(new { Message = "Logged out" });
         }
 
         [HttpDelete("{id}")]
