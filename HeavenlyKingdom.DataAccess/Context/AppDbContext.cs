@@ -17,6 +17,10 @@ namespace HeavenlyKingdom.DataAccess.Context
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<ChapelCandle> ChapelCandles { get; set; }
+        public DbSet<Indulgence> Indulgences { get; set; }
+        public DbSet<Holiday> Holidays { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -80,6 +84,40 @@ namespace HeavenlyKingdom.DataAccess.Context
 
             modelBuilder.Entity<OrderItem>()
                 .Property(oi => oi.Price)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.User)
+                .WithMany()
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.Product)
+                .WithMany()
+                .HasForeignKey(f => f.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Favorite>()
+                .HasIndex(f => new { f.UserId, f.ProductId })
+                .IsUnique();
+
+            modelBuilder.Entity<ChapelCandle>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Indulgence>()
+                .HasOne(i => i.User)
+                .WithMany()
+                .HasForeignKey(i => i.UserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Indulgence>()
+                .Property(i => i.Price)
                 .HasColumnType("decimal(18,2)");
         }
     }

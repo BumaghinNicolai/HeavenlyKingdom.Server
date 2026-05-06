@@ -49,6 +49,23 @@ namespace HeavenlyKingdom.Helpers.Mapping
 
             // Notification
             CreateMap<Notification, NotificationDto>();
+
+            // ChapelCandle
+            CreateMap<ChapelCandle, ChapelCandleDto>();
+
+            // Indulgence
+            CreateMap<Indulgence, IndulgenceDto>();
+
+            // Holiday
+            CreateMap<Holiday, HolidayDto>();
+            CreateMap<CreateHolidayDto, Holiday>();
+
+            // Favorite
+            CreateMap<Favorite, FavoriteDto>()
+                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
+                .ForMember(d => d.ProductImg, o => o.MapFrom(s => s.Product.Img))
+                .ForMember(d => d.ProductPrice, o => o.MapFrom(s => s.Product.Price))
+                .ForMember(d => d.ProductCat, o => o.MapFrom(s => s.Product.Category.Name));
         }
     }
 }

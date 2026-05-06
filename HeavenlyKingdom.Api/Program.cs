@@ -23,6 +23,10 @@ builder.Services.AddScoped<ICandleRepository, CandleRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+builder.Services.AddScoped<IChapelRepository, ChapelRepository>();
+builder.Services.AddScoped<IIndulgenceRepository, IndulgenceRepository>();
+builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
 
 // Сервисы (BLL)
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -34,6 +38,10 @@ builder.Services.AddScoped<ICandleService, CandleService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+builder.Services.AddScoped<IChapelService, ChapelService>();
+builder.Services.AddScoped<IIndulgenceService, IndulgenceService>();
+builder.Services.AddScoped<IHolidayService, HolidayService>();
 
 // AutoMapper с MappingProfile лежит в HeavenlyKingdom.Helpers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
