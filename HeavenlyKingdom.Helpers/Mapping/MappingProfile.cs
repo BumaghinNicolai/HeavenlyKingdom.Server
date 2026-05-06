@@ -50,6 +50,9 @@ namespace HeavenlyKingdom.Helpers.Mapping
             // Notification
             CreateMap<Notification, NotificationDto>();
 
+            // ChapelCandle
+            CreateMap<ChapelCandle, ChapelCandleDto>();
+
             // Favorite
             CreateMap<Favorite, FavoriteDto>()
                 .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))

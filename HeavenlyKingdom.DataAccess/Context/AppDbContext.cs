@@ -18,6 +18,7 @@ namespace HeavenlyKingdom.DataAccess.Context
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<ChapelCandle> ChapelCandles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -98,6 +99,13 @@ namespace HeavenlyKingdom.DataAccess.Context
             modelBuilder.Entity<Favorite>()
                 .HasIndex(f => new { f.UserId, f.ProductId })
                 .IsUnique();
+
+            modelBuilder.Entity<ChapelCandle>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
