@@ -17,6 +17,7 @@ namespace HeavenlyKingdom.DataAccess.Context
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -81,6 +82,22 @@ namespace HeavenlyKingdom.DataAccess.Context
             modelBuilder.Entity<OrderItem>()
                 .Property(oi => oi.Price)
                 .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.User)
+                .WithMany()
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.Product)
+                .WithMany()
+                .HasForeignKey(f => f.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Favorite>()
+                .HasIndex(f => new { f.UserId, f.ProductId })
+                .IsUnique();
         }
     }
 }

@@ -49,6 +49,13 @@ namespace HeavenlyKingdom.Helpers.Mapping
 
             // Notification
             CreateMap<Notification, NotificationDto>();
+
+            // Favorite
+            CreateMap<Favorite, FavoriteDto>()
+                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
+                .ForMember(d => d.ProductImg, o => o.MapFrom(s => s.Product.Img))
+                .ForMember(d => d.ProductPrice, o => o.MapFrom(s => s.Product.Price))
+                .ForMember(d => d.ProductCat, o => o.MapFrom(s => s.Product.Category.Name));
         }
     }
 }
