@@ -43,6 +43,12 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<Candle, CandleDto>();
             CreateMap<CreateCandleDto, Candle>();
             CreateMap<UpdateCandleDto, Candle>();
+
+            // Address
+            CreateMap<Address, AddressDto>();
+
+            // Notification
+            CreateMap<Notification, NotificationDto>();
         }
     }
 }

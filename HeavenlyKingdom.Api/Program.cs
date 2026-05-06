@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-// ����������� (DAL)
+// Репозитории (DAL)
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
@@ -21,8 +21,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFatherRepository, FatherRepository>();
 builder.Services.AddScoped<ICandleRepository, CandleRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
-// ������� (BLL)
+// Сервисы (BLL)
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
@@ -30,11 +32,13 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFatherService, FatherService>();
 builder.Services.AddScoped<ICandleService, CandleService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
-// AutoMapper � MappingProfile ����� � HeavenlyKingdom.Helpers
+// AutoMapper с MappingProfile лежит в HeavenlyKingdom.Helpers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// CORS ��� ������ (Vite �� ��������� �� 5173)
+// CORS для фронта (Vite по умолчанию на 5173)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>

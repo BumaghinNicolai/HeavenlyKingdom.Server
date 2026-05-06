@@ -15,6 +15,9 @@ namespace HeavenlyKingdom.DataAccess.Repositories
 
         public async Task<User?> GetByUsernameAsync(string username) =>
             await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+        
+        public async Task<User?> GetByEmailAsync(string email) =>
+            await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
 
         public async Task<IEnumerable<User>> GetAllAsync() =>
             await _db.Users.ToListAsync();
@@ -40,5 +43,6 @@ namespace HeavenlyKingdom.DataAccess.Repositories
                 await _db.SaveChangesAsync();
             }
         }
+
     }
 }
