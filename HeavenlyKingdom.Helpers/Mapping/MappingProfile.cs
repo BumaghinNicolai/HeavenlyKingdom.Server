@@ -56,6 +56,10 @@ namespace HeavenlyKingdom.Helpers.Mapping
             // Indulgence
             CreateMap<Indulgence, IndulgenceDto>();
 
+            // Holiday
+            CreateMap<Holiday, HolidayDto>();
+            CreateMap<CreateHolidayDto, Holiday>();
+
             // Favorite
             CreateMap<Favorite, FavoriteDto>()
                 .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))

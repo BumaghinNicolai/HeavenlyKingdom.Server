@@ -20,6 +20,7 @@ namespace HeavenlyKingdom.DataAccess.Context
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<ChapelCandle> ChapelCandles { get; set; }
         public DbSet<Indulgence> Indulgences { get; set; }
+        public DbSet<Holiday> Holidays { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
