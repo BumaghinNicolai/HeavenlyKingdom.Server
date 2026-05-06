@@ -53,6 +53,9 @@ namespace HeavenlyKingdom.Helpers.Mapping
             // ChapelCandle
             CreateMap<ChapelCandle, ChapelCandleDto>();
 
+            // Indulgence
+            CreateMap<Indulgence, IndulgenceDto>();
+
             // Favorite
             CreateMap<Favorite, FavoriteDto>()
                 .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))

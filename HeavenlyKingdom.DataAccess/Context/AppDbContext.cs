@@ -19,6 +19,7 @@ namespace HeavenlyKingdom.DataAccess.Context
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<ChapelCandle> ChapelCandles { get; set; }
+        public DbSet<Indulgence> Indulgences { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -106,6 +107,17 @@ namespace HeavenlyKingdom.DataAccess.Context
                 .HasForeignKey(c => c.UserId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Indulgence>()
+                .HasOne(i => i.User)
+                .WithMany()
+                .HasForeignKey(i => i.UserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Indulgence>()
+                .Property(i => i.Price)
+                .HasColumnType("decimal(18,2)");
         }
     }
 }
