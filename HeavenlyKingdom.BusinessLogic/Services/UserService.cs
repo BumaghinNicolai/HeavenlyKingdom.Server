@@ -19,13 +19,14 @@ namespace HeavenlyKingdom.BusinessLogic.Services
 
         public async Task<UserResponseDto?> RegisterAsync(RegisterDto dto)
         {
-            // Проверяем что username не занят
-            var existing = await _repo.GetByUsernameAsync(dto.Username);
+            var existing = await _repo.GetByEmailAsync(dto.Email);
             if (existing != null) return null;
 
             var user = new User
             {
-                Username = dto.Username,
+                Name = dto.Name,
+                LastName = dto.LastName,
+                Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
             };
 
@@ -35,7 +36,7 @@ namespace HeavenlyKingdom.BusinessLogic.Services
 
         public async Task<UserResponseDto?> LoginAsync(LoginDto dto)
         {
-            var user = await _repo.GetByUsernameAsync(dto.Username);
+            var user = await _repo.GetByEmailAsync(dto.Email);
             if (user == null) return null;
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password)) return null;
             return _mapper.Map<UserResponseDto>(user);
