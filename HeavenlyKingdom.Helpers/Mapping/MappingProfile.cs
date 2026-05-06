@@ -43,6 +43,13 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<Candle, CandleDto>();
             CreateMap<CreateCandleDto, Candle>();
             CreateMap<UpdateCandleDto, Candle>();
+
+            // Order
+            CreateMap<Order, OrderDto>()
+                .ForMember(d => d.Number, o => o.MapFrom(s => $"#{s.Id:D5}"));
+            CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
+                .ForMember(d => d.ProductImg,  o => o.MapFrom(s => s.Product.Img));
         }
     }
 }
