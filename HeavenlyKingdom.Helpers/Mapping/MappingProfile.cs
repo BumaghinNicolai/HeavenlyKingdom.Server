@@ -46,6 +46,9 @@ namespace HeavenlyKingdom.Helpers.Mapping
 
             // Address
             CreateMap<Address, AddressDto>();
+
+            // Notification
+            CreateMap<Notification, NotificationDto>();
         }
     }
 }
