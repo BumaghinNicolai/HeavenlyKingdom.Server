@@ -36,3 +36,4 @@ Thumbs.db
 # User secrets
 secrets.json
 appsettings.Development.json
+/.claude
