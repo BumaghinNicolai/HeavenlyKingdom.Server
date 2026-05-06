@@ -8,32 +8,32 @@ namespace HeavenlyKingdom.BusinessLogic.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IOrderRepository _repo;
+        private readonly IOrderRepository _orderRepo;
         private readonly IProductRepository _productRepo;
         private readonly IMapper _mapper;
 
-        public OrderService(IOrderRepository repo, IProductRepository productRepo, IMapper mapper)
+        public OrderService(IOrderRepository orderRepo, IProductRepository productRepo, IMapper mapper)
         {
-            _repo = repo;
+            _orderRepo = orderRepo;
             _productRepo = productRepo;
             _mapper = mapper;
         }
 
         public async Task<List<OrderDto>> GetActiveAsync(int userId)
         {
-            var orders = await _repo.GetActiveByUserIdAsync(userId);
+            var orders = await _orderRepo.GetActiveByUserIdAsync(userId);
             return _mapper.Map<List<OrderDto>>(orders);
         }
 
         public async Task<List<OrderDto>> GetHistoryAsync(int userId)
         {
-            var orders = await _repo.GetHistoryByUserIdAsync(userId);
+            var orders = await _orderRepo.GetHistoryByUserIdAsync(userId);
             return _mapper.Map<List<OrderDto>>(orders);
         }
 
         public async Task<OrderDto?> GetByIdAsync(int id)
         {
-            var order = await _repo.GetByIdAsync(id);
+            var order = await _orderRepo.GetByIdAsync(id);
             return order == null ? null : _mapper.Map<OrderDto>(order);
         }
 
@@ -50,8 +50,8 @@ namespace HeavenlyKingdom.BusinessLogic.Services
                 items.Add(new OrderItem
                 {
                     ProductId = itemDto.ProductId,
-                    Quantity  = itemDto.Quantity,
-                    Price     = product.Price
+                    Quantity = itemDto.Quantity,
+                    Price = product.Price
                 });
 
                 total += product.Price * itemDto.Quantity;
@@ -59,17 +59,19 @@ namespace HeavenlyKingdom.BusinessLogic.Services
 
             var order = new Order
             {
-                UserId      = userId,
-                AddressId   = dto.AddressId,
-                CreatedAt   = DateTime.UtcNow,
-                Status      = "placed",
+                UserId = userId,
+                AddressId = dto.AddressId,
+                CreatedAt = DateTime.UtcNow,
+                Status = "placed",
                 TotalAmount = total,
-                Items       = items
+                Items = items
             };
 
-            await _repo.AddAsync(order);
-            var full = await _repo.GetByIdAsync(order.Id);
-            return _mapper.Map<OrderDto>(full!);
+            await _orderRepo.AddAsync(order);
+            
+            // Получаем заказ с подгруженными данными (Eager Loading) для корректного маппинга
+            var fullOrder = await _orderRepo.GetByIdAsync(order.Id);
+            return _mapper.Map<OrderDto>(fullOrder!);
         }
     }
 }

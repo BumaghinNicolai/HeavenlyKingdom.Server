@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HeavenlyKingdom.Domain.DTOs;
 using HeavenlyKingdom.Domain.Entities;
 
@@ -20,7 +20,6 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<UpdateProductDto, Product>();
 
             // CartItem → плоский DTO под фронт
-            // img, name, cat, price тянем из вложенного Product
             CreateMap<CartItem, CartItemDto>()
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Product.Name))
                 .ForMember(d => d.Cat, o => o.MapFrom(s => s.Product.Category.Name))
@@ -44,12 +43,19 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<CreateCandleDto, Candle>();
             CreateMap<UpdateCandleDto, Candle>();
 
-            // Order
+            // Order (Объединено из Valera и логики main)
             CreateMap<Order, OrderDto>()
-                .ForMember(d => d.Number, o => o.MapFrom(s => $"#{s.Id:D5}"));
+                .ForMember(d => d.Number, o => o.MapFrom(s => $"ORD-{s.Id:D5}"));
+
             CreateMap<OrderItem, OrderItemDto>()
                 .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
-                .ForMember(d => d.ProductImg,  o => o.MapFrom(s => s.Product.Img));
+                .ForMember(d => d.ProductImg, o => o.MapFrom(s => s.Product.Img));
+
+            // Address (из ветки main)
+            CreateMap<Address, AddressDto>();
+
+            // Notification (из ветки main)
+            CreateMap<Notification, NotificationDto>();
         }
     }
 }
