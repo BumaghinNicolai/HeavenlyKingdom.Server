@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -21,7 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\HeavenlyKingdom.BusinessLogic\HeavenlyKingdom.BusinessLogic.csproj" />
     <ProjectReference Include="..\HeavenlyKingdom.DataAccess\HeavenlyKingdom.DataAccess.csproj" />
-    <ProjectReference Include="..\HeavenlyKingdom.Domain\HeavenlyKingdom.Domain.csproj" />
     <ProjectReference Include="..\HeavenlyKingdom.Domain\HeavenlyKingdom.Domain.csproj" />
     <ProjectReference Include="..\HeavenlyKingdom.Helpers\HeavenlyKingdom.Helpers.csproj" />
   </ItemGroup>

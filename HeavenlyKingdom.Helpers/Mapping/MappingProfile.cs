@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HeavenlyKingdom.Domain.DTOs;
 using HeavenlyKingdom.Domain.Entities;
 
@@ -20,7 +20,6 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<UpdateProductDto, Product>();
 
             // CartItem → плоский DTO под фронт
-            // img, name, cat, price тянем из вложенного Product
             CreateMap<CartItem, CartItemDto>()
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Product.Name))
                 .ForMember(d => d.Cat, o => o.MapFrom(s => s.Product.Category.Name))
@@ -44,28 +43,19 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<CreateCandleDto, Candle>();
             CreateMap<UpdateCandleDto, Candle>();
 
-            // Address
+            // Order (Объединено из Valera и логики main)
+            CreateMap<Order, OrderDto>()
+                .ForMember(d => d.Number, o => o.MapFrom(s => $"ORD-{s.Id:D5}"));
+
+            CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
+                .ForMember(d => d.ProductImg, o => o.MapFrom(s => s.Product.Img));
+
+            // Address (из ветки main)
             CreateMap<Address, AddressDto>();
 
-            // Notification
+            // Notification (из ветки main)
             CreateMap<Notification, NotificationDto>();
-
-            // ChapelCandle
-            CreateMap<ChapelCandle, ChapelCandleDto>();
-
-            // Indulgence
-            CreateMap<Indulgence, IndulgenceDto>();
-
-            // Holiday
-            CreateMap<Holiday, HolidayDto>();
-            CreateMap<CreateHolidayDto, Holiday>();
-
-            // Favorite
-            CreateMap<Favorite, FavoriteDto>()
-                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
-                .ForMember(d => d.ProductImg, o => o.MapFrom(s => s.Product.Img))
-                .ForMember(d => d.ProductPrice, o => o.MapFrom(s => s.Product.Price))
-                .ForMember(d => d.ProductCat, o => o.MapFrom(s => s.Product.Category.Name));
         }
     }
 }
