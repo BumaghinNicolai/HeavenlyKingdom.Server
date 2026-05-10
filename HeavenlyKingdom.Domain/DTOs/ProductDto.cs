@@ -8,6 +8,8 @@
         public string Cat { get; set; } = string.Empty;
         public string Img { get; set; } = string.Empty;
         public bool IsNew { get; set; }
+        public bool OnSale { get; set; }
+        public decimal? SalePrice { get; set; }
     }
 
     public class CreateProductDto
@@ -16,6 +18,8 @@
         public decimal Price { get; set; }
         public string Img { get; set; } = string.Empty;
         public bool IsNew { get; set; }
+        public bool OnSale { get; set; }
+        public decimal? SalePrice { get; set; }
         public int CategoryId { get; set; }
     }
 
@@ -25,6 +29,8 @@
         public decimal Price { get; set; }
         public string Img { get; set; } = string.Empty;
         public bool IsNew { get; set; }
+        public bool OnSale { get; set; }
+        public decimal? SalePrice { get; set; }
         public int CategoryId { get; set; }
     }
 }
