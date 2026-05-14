@@ -17,9 +17,9 @@ namespace HeavenlyKingdom.BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task<List<ProductDto>> GetAllAsync()
+        public async Task<List<ProductDto>> GetAllAsync(string? search = null, string? category = null, decimal? minPrice = null, decimal? maxPrice = null)
         {
-            var products = await _repo.GetAllAsync();
+            var products = await _repo.GetAllAsync(search, category, minPrice, maxPrice);
             return _mapper.Map<List<ProductDto>>(products);
         }
 

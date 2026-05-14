@@ -56,6 +56,27 @@ namespace HeavenlyKingdom.Helpers.Mapping
 
             // Notification (из ветки main)
             CreateMap<Notification, NotificationDto>();
+
+            // ChapelCandle
+            CreateMap<ChapelCandle, ChapelCandleDto>();
+
+            // Indulgence
+            CreateMap<Indulgence, IndulgenceDto>();
+
+            // Holiday
+            CreateMap<Holiday, HolidayDto>();
+
+            // DonationGoal
+            CreateMap<DonationGoal, DonationGoalDto>()
+                .ForMember(d => d.ProgressPercent,
+                    o => o.MapFrom(s => s.Target == 0 ? 0 : Math.Round(s.Current / s.Target * 100, 2)));
+
+            // Favorite → плоский DTO с данными продукта
+            CreateMap<Favorite, FavoriteDto>()
+                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
+                .ForMember(d => d.ProductImg, o => o.MapFrom(s => s.Product.Img))
+                .ForMember(d => d.ProductPrice, o => o.MapFrom(s => s.Product.Price))
+                .ForMember(d => d.ProductCat, o => o.MapFrom(s => s.Product.Category.Name));
         }
     }
 }
