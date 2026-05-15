@@ -6,7 +6,7 @@ namespace HeavenlyKingdom.Api.Filters
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class FatherMod : ActionFilterAttribute
     {
-        public override int Order => 2;
+        public FatherMod() { Order = 2; }
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {

@@ -16,6 +16,9 @@ namespace HeavenlyKingdom.DataAccess.Repositories
         public async Task<Father?> GetByIdAsync(int id) =>
             await _db.Fathers.FindAsync(id);
 
+        public async Task<Father?> GetByUserIdAsync(int userId) =>
+            await _db.Fathers.FirstOrDefaultAsync(f => f.UserId == userId);
+
         public async Task<Father> AddAsync(Father father)
         {
             await _db.Fathers.AddAsync(father);

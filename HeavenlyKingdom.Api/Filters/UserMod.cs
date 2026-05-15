@@ -6,7 +6,7 @@ namespace HeavenlyKingdom.Api.Filters
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class UserMod : ActionFilterAttribute
     {
-        public override int Order => 3;
+        public UserMod() { Order = 3; }
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {

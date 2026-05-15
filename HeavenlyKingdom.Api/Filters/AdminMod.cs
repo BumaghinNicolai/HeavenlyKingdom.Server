@@ -6,7 +6,7 @@ namespace HeavenlyKingdom.Api.Filters
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AdminMod : ActionFilterAttribute
     {
-        public override int Order => 1;
+        public AdminMod() { Order = 1; }
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
