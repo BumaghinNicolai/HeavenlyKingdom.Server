@@ -1,4 +1,5 @@
-﻿using HeavenlyKingdom.BusinessLogic.Interfaces;
+﻿using HeavenlyKingdom.Api.Filters;
+using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,10 +51,6 @@ namespace HeavenlyKingdom.Api.Controllers
 
             return Ok(result);
         }
-
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
         [HttpPut("me")]
         [UserMod]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
@@ -64,8 +61,7 @@ namespace HeavenlyKingdom.Api.Controllers
             return result == null ? NotFound() : Ok(result);
         }
 
-=======
->>>>>>> fcf20cddfd31962b6bd51935a8ac14bdbb10b871
+
         [HttpPost("logout")]
         public IActionResult Logout()
         {
@@ -73,10 +69,8 @@ namespace HeavenlyKingdom.Api.Controllers
             return Ok(new { Message = "Logged out" });
         }
 
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> fcf20cddfd31962b6bd51935a8ac14bdbb10b871
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
