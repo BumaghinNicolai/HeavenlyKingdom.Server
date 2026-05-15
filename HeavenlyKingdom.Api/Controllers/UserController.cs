@@ -46,6 +46,7 @@ namespace HeavenlyKingdom.Api.Controllers
             // Записываем сессию
             HttpContext.Session.SetString("userId", result.Id.ToString());
             HttpContext.Session.SetString("isAdmin", result.IsAdmin.ToString().ToLower());
+            HttpContext.Session.SetString("isFather", result.IsFather.ToString().ToLower());
 
             return Ok(result);
         }

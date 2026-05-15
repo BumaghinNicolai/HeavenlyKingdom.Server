@@ -1,3 +1,4 @@
+using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,34 +18,31 @@ namespace HeavenlyKingdom.Api.Controllers
             return int.TryParse(raw, out var id) ? id : null;
         }
 
-        // GET /api/favorites
         [HttpGet]
+        [UserMod]
         public async Task<IActionResult> GetAll()
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            var result = await _favoriteService.GetByUserIdAsync(userId.Value);
+            var userId = GetUserId()!.Value;
+            var result = await _favoriteService.GetByUserIdAsync(userId);
             return Ok(result);
         }
 
-        // POST /api/favorites/{productId}
         [HttpPost("{productId}")]
+        [UserMod]
         public async Task<IActionResult> Add(int productId)
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            var result = await _favoriteService.AddAsync(userId.Value, productId);
+            var userId = GetUserId()!.Value;
+            var result = await _favoriteService.AddAsync(userId, productId);
             if (result == null) return Conflict(new { Message = "Already in favorites" });
             return Created($"/api/favorites", result);
         }
 
-        // DELETE /api/favorites/{productId}
         [HttpDelete("{productId}")]
+        [UserMod]
         public async Task<IActionResult> Delete(int productId)
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            var success = await _favoriteService.DeleteAsync(userId.Value, productId);
+            var userId = GetUserId()!.Value;
+            var success = await _favoriteService.DeleteAsync(userId, productId);
             if (!success) return NotFound(new { Message = "Not found in favorites" });
             return NoContent();
         }

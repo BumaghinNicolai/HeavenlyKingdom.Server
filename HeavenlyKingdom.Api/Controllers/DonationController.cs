@@ -15,7 +15,7 @@ namespace HeavenlyKingdom.Api.Controllers
 
         // GET /api/admin/donations
         [HttpGet]
-        [AdminFilter]
+        [AdminMod]
         public async Task<IActionResult> GetGoal()
         {
             var result = await _donationService.GetGoalAsync();
@@ -25,7 +25,7 @@ namespace HeavenlyKingdom.Api.Controllers
 
         // PUT /api/admin/donations
         [HttpPut]
-        [AdminFilter]
+        [AdminMod]
         public async Task<IActionResult> UpdateGoal([FromBody] UpdateDonationGoalDto dto)
         {
             var result = await _donationService.UpdateGoalAsync(dto);
@@ -34,7 +34,7 @@ namespace HeavenlyKingdom.Api.Controllers
 
         // POST /api/admin/donations/progress
         [HttpPost("progress")]
-        [AdminFilter]
+        [AdminMod]
         public async Task<IActionResult> AddProgress([FromBody] AddProgressDto dto)
         {
             var result = await _donationService.AddProgressAsync(dto);
@@ -43,7 +43,7 @@ namespace HeavenlyKingdom.Api.Controllers
 
         // POST /api/admin/donations/reset
         [HttpPost("reset")]
-        [AdminFilter]
+        [AdminMod]
         public async Task<IActionResult> Reset()
         {
             var result = await _donationService.ResetAsync();
