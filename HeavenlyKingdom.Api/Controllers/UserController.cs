@@ -41,13 +41,20 @@ namespace HeavenlyKingdom.Api.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var result = await _userService.LoginAsync(dto);
-            if (result == null) return Unauthorized(new { Message = "Invalid username or password" });
+            if (result == null) return Unauthorized(new { Message = "Invalid email or password" });
 
             // Записываем сессию
             HttpContext.Session.SetString("userId", result.Id.ToString());
             HttpContext.Session.SetString("isAdmin", result.IsAdmin.ToString().ToLower());
 
             return Ok(result);
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok(new { Message = "Logged out" });
         }
 
         [HttpDelete("{id}")]
