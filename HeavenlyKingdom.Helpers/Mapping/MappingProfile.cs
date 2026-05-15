@@ -37,6 +37,7 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<Father, FatherDto>();
             CreateMap<CreateFatherDto, Father>();
             CreateMap<UpdateFatherDto, Father>();
+            CreateMap<UpdateFatherProfileDto, Father>();
             
             // Candle
             CreateMap<Candle, CandleDto>();
