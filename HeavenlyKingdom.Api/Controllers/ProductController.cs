@@ -13,8 +13,12 @@ namespace HeavenlyKingdom.Api.Controllers
         public ProductController(IProductService service) => _service = service;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() =>
-            Ok(await _service.GetAllAsync());
+        public async Task<IActionResult> GetAll(
+            [FromQuery] string? search,
+            [FromQuery] string? category,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice) =>
+            Ok(await _service.GetAllAsync(search, category, minPrice, maxPrice));
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
