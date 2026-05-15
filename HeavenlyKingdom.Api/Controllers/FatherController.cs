@@ -1,4 +1,4 @@
-﻿using HeavenlyKingdom.Api.Filters;
+using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +22,31 @@ namespace HeavenlyKingdom.Api.Controllers
             var result = await _service.GetByIdAsync(id);
             return result == null ? NotFound() : Ok(result);
         }
+
+        [HttpGet("me")]
+        [FatherMod]
+        public async Task<IActionResult> GetMe()
+        {
+            var userIdStr = HttpContext.Session.GetString("userId");
+            if (!int.TryParse(userIdStr, out var userId)) return Unauthorized();
+            var result = await _service.GetByUserIdAsync(userId);
+            return result == null ? NotFound() : Ok(result);
+        }
+
+        [HttpPut("me")]
+        [FatherMod]
+        public async Task<IActionResult> UpdateMe([FromBody] UpdateFatherProfileDto dto)
+        {
+            var userIdStr = HttpContext.Session.GetString("userId");
+            if (!int.TryParse(userIdStr, out var userId)) return Unauthorized();
+            var result = await _service.UpdateProfileAsync(userId, dto);
+            return result == null ? NotFound() : Ok(result);
+        }
+
+        [HttpGet("orders")]
+        [FatherMod]
+        public async Task<IActionResult> GetOrders() =>
+            Ok(await _service.GetAllOrdersAsync());
 
         [HttpPost]
         [AdminMod]
