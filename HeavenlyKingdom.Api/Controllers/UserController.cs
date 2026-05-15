@@ -50,6 +50,26 @@ namespace HeavenlyKingdom.Api.Controllers
             return Ok(result);
         }
 
+<<<<<<< Updated upstream
+=======
+        [HttpPut("me")]
+        [UserMod]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
+        {
+            var raw = HttpContext.Session.GetString("userId");
+            if (!int.TryParse(raw, out var userId)) return Unauthorized();
+            var result = await _userService.UpdateProfileAsync(userId, dto);
+            return result == null ? NotFound() : Ok(result);
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok(new { Message = "Logged out" });
+        }
+
+>>>>>>> Stashed changes
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
