@@ -54,6 +54,17 @@ namespace HeavenlyKingdom.BusinessLogic.Services
             return _mapper.Map<IEnumerable<UserResponseDto>>(users);
         }
 
+        public async Task<UserResponseDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto)
+        {
+            var user = await _repo.GetByIdAsync(userId);
+            if (user == null) return null;
+            user.Name = dto.Name;
+            user.LastName = dto.LastName;
+            user.Phone = dto.Phone;
+            await _repo.UpdateAsync(user);
+            return _mapper.Map<UserResponseDto>(user);
+        }
+
         public async Task<bool> DeleteAsync(int id)
         {
             var user = await _repo.GetByIdAsync(id);
