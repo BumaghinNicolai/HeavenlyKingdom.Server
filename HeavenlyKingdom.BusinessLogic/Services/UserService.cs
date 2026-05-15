@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.DataAccess.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
@@ -24,9 +24,9 @@ namespace HeavenlyKingdom.BusinessLogic.Services
 
             var user = new User
             {
-                Name     = dto.Name,
+                Name = dto.Name,
                 LastName = dto.LastName,
-                Email    = dto.Email,
+                Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
             };
 
