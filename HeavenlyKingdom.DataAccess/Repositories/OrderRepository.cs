@@ -10,6 +10,13 @@ namespace HeavenlyKingdom.DataAccess.Repositories
         private readonly AppDbContext _context;
         public OrderRepository(AppDbContext context) => _context = context;
 
+        public async Task<List<Order>> GetAllAsync() =>
+            await _context.Orders
+                .Include(o => o.Items).ThenInclude(i => i.Product)
+                .Include(o => o.Address)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+
         public async Task<List<Order>> GetByUserIdAsync(int userId) =>
             await _context.Orders
                 .Include(o => o.Items).ThenInclude(i => i.Product)
