@@ -8,7 +8,7 @@ namespace HeavenlyKingdom.Api.Controllers
     public class AdminController : ControllerBase
     {
         [HttpGet("stats")]
-        [AdminFilter]
+        [AdminMod]
         public IActionResult GetStats()
         {
             return Ok(new { Message = "Admin stats - access granted" });

@@ -1,3 +1,4 @@
+using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,33 +18,29 @@ namespace HeavenlyKingdom.Api.Controllers
             return int.TryParse(raw, out var id) ? id : null;
         }
 
-        // GET /api/notifications
         [HttpGet]
+        [UserMod]
         public async Task<IActionResult> GetAll()
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            var result = await _notificationService.GetByUserIdAsync(userId.Value);
+            var userId = GetUserId()!.Value;
+            var result = await _notificationService.GetByUserIdAsync(userId);
             return Ok(result);
         }
 
-        // PUT /api/notifications/{id}/read
         [HttpPut("{id}/read")]
+        [UserMod]
         public async Task<IActionResult> MarkAsRead(int id)
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
             await _notificationService.MarkAsReadAsync(id);
             return Ok(new { Message = "Notification marked as read" });
         }
 
-        // PUT /api/notifications/mark-all-read
         [HttpPut("mark-all-read")]
+        [UserMod]
         public async Task<IActionResult> MarkAllAsRead()
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            await _notificationService.MarkAllAsReadAsync(userId.Value);
+            var userId = GetUserId()!.Value;
+            await _notificationService.MarkAllAsReadAsync(userId);
             return Ok(new { Message = "All notifications marked as read" });
         }
     }

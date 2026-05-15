@@ -1,3 +1,4 @@
+using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -17,55 +18,50 @@ namespace HeavenlyKingdom.Api.Controllers
             return int.TryParse(raw, out var id) ? id : null;
         }
 
-        // GET /api/addresses
         [HttpGet]
+        [UserMod]
         public async Task<IActionResult> GetAll()
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            var addresses = await _addressService.GetByUserIdAsync(userId.Value);
+            var userId = GetUserId()!.Value;
+            var addresses = await _addressService.GetByUserIdAsync(userId);
             return Ok(addresses);
         }
 
-        // POST /api/addresses
         [HttpPost]
+        [UserMod]
         public async Task<IActionResult> Create([FromBody] CreateAddressDto dto)
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            var result = await _addressService.CreateAsync(userId.Value, dto);
+            var userId = GetUserId()!.Value;
+            var result = await _addressService.CreateAsync(userId, dto);
             return Created($"/api/addresses/{result.Id}", result);
         }
 
-        // PUT /api/addresses/{id}
         [HttpPut("{id}")]
+        [UserMod]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateAddressDto dto)
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            var result = await _addressService.UpdateAsync(id, userId.Value, dto);
+            var userId = GetUserId()!.Value;
+            var result = await _addressService.UpdateAsync(id, userId, dto);
             if (result == null) return NotFound(new { Message = "Address not found" });
             return Ok(result);
         }
 
-        // DELETE /api/addresses/{id}
         [HttpDelete("{id}")]
+        [UserMod]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            var success = await _addressService.DeleteAsync(id, userId.Value);
+            var userId = GetUserId()!.Value;
+            var success = await _addressService.DeleteAsync(id, userId);
             if (!success) return NotFound(new { Message = "Address not found" });
             return NoContent();
         }
 
-        // PUT /api/addresses/{id}/set-default
         [HttpPut("{id}/set-default")]
+        [UserMod]
         public async Task<IActionResult> SetDefault(int id)
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            var success = await _addressService.SetDefaultAsync(id, userId.Value);
+            var userId = GetUserId()!.Value;
+            var success = await _addressService.SetDefaultAsync(id, userId);
             if (!success) return NotFound(new { Message = "Address not found" });
             return Ok(new { Message = "Default address updated" });
         }

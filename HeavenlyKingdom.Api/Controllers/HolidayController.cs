@@ -15,7 +15,7 @@ namespace HeavenlyKingdom.Api.Controllers
 
         // GET /api/admin/holidays
         [HttpGet]
-        [AdminFilter]
+        [AdminMod]
         public async Task<IActionResult> GetAll()
         {
             var result = await _holidayService.GetAllAsync();
@@ -24,7 +24,7 @@ namespace HeavenlyKingdom.Api.Controllers
 
         // POST /api/admin/holidays
         [HttpPost]
-        [AdminFilter]
+        [AdminMod]
         public async Task<IActionResult> Create([FromBody] CreateHolidayDto dto)
         {
             var result = await _holidayService.CreateAsync(dto);
@@ -33,7 +33,7 @@ namespace HeavenlyKingdom.Api.Controllers
 
         // DELETE /api/admin/holidays/{id}
         [HttpDelete("{id}")]
-        [AdminFilter]
+        [AdminMod]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _holidayService.DeleteAsync(id);
