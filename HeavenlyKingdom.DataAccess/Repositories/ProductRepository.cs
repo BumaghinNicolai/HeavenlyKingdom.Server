@@ -14,10 +14,24 @@ namespace HeavenlyKingdom.DataAccess.Repositories
             _context = context;
         }
 
-        public async Task<List<Product>> GetAllAsync() =>
-            await _context.Products
-                .Include(p => p.Category)
-                .ToListAsync();
+        public async Task<List<Product>> GetAllAsync(string? search, string? category, decimal? minPrice, decimal? maxPrice)
+        {
+            var query = _context.Products.Include(p => p.Category).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(p => p.Name.Contains(search));
+
+            if (!string.IsNullOrWhiteSpace(category))
+                query = query.Where(p => p.Category.Name == category);
+
+            if (minPrice != null)
+                query = query.Where(p => p.Price >= minPrice);
+
+            if (maxPrice != null)
+                query = query.Where(p => p.Price <= maxPrice);
+
+            return await query.ToListAsync();
+        }
 
         public async Task<Product?> GetByIdAsync(int id) =>
             await _context.Products
@@ -40,6 +54,8 @@ namespace HeavenlyKingdom.DataAccess.Repositories
             existing.Price = updated.Price;
             existing.Img = updated.Img;
             existing.IsNew = updated.IsNew;
+            existing.OnSale = updated.OnSale;
+            existing.SalePrice = updated.SalePrice;
             existing.CategoryId = updated.CategoryId;
 
             await _context.SaveChangesAsync();

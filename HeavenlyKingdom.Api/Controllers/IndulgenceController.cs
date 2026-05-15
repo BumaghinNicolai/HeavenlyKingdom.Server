@@ -1,0 +1,40 @@
+using HeavenlyKingdom.BusinessLogic.Interfaces;
+using HeavenlyKingdom.Domain.DTOs;
+using Microsoft.AspNetCore.Mvc;
+
+namespace HeavenlyKingdom.Api.Controllers
+{
+    [Route("api/indulgences")]
+    [ApiController]
+    public class IndulgenceController : ControllerBase
+    {
+        private readonly IIndulgenceService _indulgenceService;
+        public IndulgenceController(IIndulgenceService indulgenceService) =>
+            _indulgenceService = indulgenceService;
+
+        private int? GetUserId()
+        {
+            var raw = HttpContext.Session.GetString("userId");
+            return int.TryParse(raw, out var id) ? id : null;
+        }
+
+        // GET /api/indulgences
+        [HttpGet]
+        public async Task<IActionResult> GetHistory()
+        {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
+            var result = await _indulgenceService.GetHistoryAsync(userId.Value);
+            return Ok(result);
+        }
+
+        // POST /api/indulgences
+        [HttpPost]
+        public async Task<IActionResult> Purchase([FromBody] PurchaseIndulgenceDto dto)
+        {
+            var userId = GetUserId(); // nullable — гости тоже могут купить
+            var result = await _indulgenceService.PurchaseAsync(userId, dto);
+            return Created("/api/indulgences", result);
+        }
+    }
+}

@@ -1,4 +1,4 @@
-﻿using HeavenlyKingdom.Domain.Entities;
+using HeavenlyKingdom.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HeavenlyKingdom.DataAccess.Context
@@ -13,32 +13,19 @@ namespace HeavenlyKingdom.DataAccess.Context
         public DbSet<User> Users { get; set; }
         public DbSet<Father> Fathers { get; set; }
         public DbSet<Candle> Candles { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<ChapelCandle> ChapelCandles { get; set; }
+        public DbSet<Indulgence> Indulgences { get; set; }
+        public DbSet<Holiday> Holidays { get; set; }
+        public DbSet<DonationGoal> DonationGoals { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Product → Category (один ко многим)
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Category)
-                .WithMany(c => c.Products)
-                .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // CartItem → Product
-            modelBuilder.Entity<CartItem>()
-                .HasOne(ci => ci.Product)
-                .WithMany()
-                .HasForeignKey(ci => ci.ProductId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Один товар — одна запись в корзине для одного SessionId
-            modelBuilder.Entity<CartItem>()
-                .HasIndex(ci => new { ci.SessionId, ci.ProductId })
-                .IsUnique();
-
-            // Точность decimal для цены
-            modelBuilder.Entity<Product>()
-                .Property(p => p.Price)
-                .HasColumnType("decimal(18,2)");
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }
 }

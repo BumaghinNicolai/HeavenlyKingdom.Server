@@ -41,15 +41,17 @@ namespace HeavenlyKingdom.Api.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var result = await _userService.LoginAsync(dto);
-            if (result == null) return Unauthorized(new { Message = "Invalid username or password" });
+            if (result == null) return Unauthorized(new { Message = "Invalid email or password" });
 
             // Записываем сессию
             HttpContext.Session.SetString("userId", result.Id.ToString());
             HttpContext.Session.SetString("isAdmin", result.IsAdmin.ToString().ToLower());
+            HttpContext.Session.SetString("isFather", result.IsFather.ToString().ToLower());
 
             return Ok(result);
         }
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
         [HttpPut("me")]
@@ -62,6 +64,8 @@ namespace HeavenlyKingdom.Api.Controllers
             return result == null ? NotFound() : Ok(result);
         }
 
+=======
+>>>>>>> fcf20cddfd31962b6bd51935a8ac14bdbb10b871
         [HttpPost("logout")]
         public IActionResult Logout()
         {
@@ -69,7 +73,10 @@ namespace HeavenlyKingdom.Api.Controllers
             return Ok(new { Message = "Logged out" });
         }
 
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> fcf20cddfd31962b6bd51935a8ac14bdbb10b871
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -13,8 +13,12 @@ namespace HeavenlyKingdom.Api.Controllers
         public ProductController(IProductService service) => _service = service;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() =>
-            Ok(await _service.GetAllAsync());
+        public async Task<IActionResult> GetAll(
+            [FromQuery] string? search,
+            [FromQuery] string? category,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice) =>
+            Ok(await _service.GetAllAsync(search, category, minPrice, maxPrice));
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -24,7 +28,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpPost]
-        [AdminFilter]
+        [AdminMod]
         public async Task<IActionResult> Create(CreateProductDto dto)
         {
             var created = await _service.CreateAsync(dto);
@@ -32,7 +36,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        [AdminFilter]
+        [AdminMod]
         public async Task<IActionResult> Update(int id, UpdateProductDto dto)
         {
             var result = await _service.UpdateAsync(id, dto);
@@ -40,7 +44,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [AdminFilter]
+        [AdminMod]
         public async Task<IActionResult> Delete(int id) =>
             await _service.DeleteAsync(id) ? NoContent() : NotFound();
     }

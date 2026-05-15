@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.DataAccess.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;

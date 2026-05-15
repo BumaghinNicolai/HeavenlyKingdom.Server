@@ -4,35 +4,50 @@ using HeavenlyKingdom.DataAccess.Context;
 using HeavenlyKingdom.DataAccess.Interfaces;
 using HeavenlyKingdom.DataAccess.Repositories;
 using HeavenlyKingdom.Helpers.Mapping;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// SQL Server
+// 1. Настройка SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-// ����������� (DAL)
+// 2. Репозитории (DAL)
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFatherRepository, FatherRepository>();
 builder.Services.AddScoped<ICandleRepository, CandleRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+builder.Services.AddScoped<IChapelRepository, ChapelRepository>();
+builder.Services.AddScoped<IIndulgenceRepository, IndulgenceRepository>();
+builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
+builder.Services.AddScoped<IDonationRepository, DonationRepository>();
 
-// ������� (BLL)
+// 3. Сервисы (BLL)
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFatherService, FatherService>();
 builder.Services.AddScoped<ICandleService, CandleService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+builder.Services.AddScoped<IChapelService, ChapelService>();
+builder.Services.AddScoped<IIndulgenceService, IndulgenceService>();
+builder.Services.AddScoped<IHolidayService, HolidayService>();
+builder.Services.AddScoped<IDonationService, DonationService>();
 
-// AutoMapper � MappingProfile ����� � HeavenlyKingdom.Helpers
+// 4. AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// CORS ��� ������ (Vite �� ��������� �� 5173)
+// 5. CORS для фронтенда (Vite)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
@@ -42,9 +57,12 @@ builder.Services.AddCors(options =>
               .AllowCredentials());
 });
 
+// 6. Базовые сервисы API
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// 7. Сессии и кэш
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -55,12 +73,19 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+// Настройка Middleware
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseCors("Frontend");
 app.UseSession();
+app.UseAuthorization(); // Желательно добавить, если планируется аутентификация
 app.MapControllers();
 
+// Автоматическое применение миграций при запуске
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();

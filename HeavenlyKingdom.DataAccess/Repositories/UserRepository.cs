@@ -1,4 +1,4 @@
-﻿using HeavenlyKingdom.DataAccess.Context;
+using HeavenlyKingdom.DataAccess.Context;
 using HeavenlyKingdom.DataAccess.Interfaces;
 using HeavenlyKingdom.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +12,9 @@ namespace HeavenlyKingdom.DataAccess.Repositories
 
         public async Task<User?> GetByIdAsync(int id) =>
             await _db.Users.FindAsync(id);
+
+        public async Task<User?> GetByEmailAsync(string email) =>
+            await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
 
         public async Task<User?> GetByEmailAsync(string email) =>
             await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
