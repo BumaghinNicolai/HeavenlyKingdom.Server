@@ -6,6 +6,7 @@ namespace HeavenlyKingdom.DataAccess.Interfaces
     {
         Task<IEnumerable<Father>> GetAllAsync();
         Task<Father?> GetByIdAsync(int id);
+        Task<Father?> GetByUserIdAsync(int userId);
         Task<Father> AddAsync(Father father);
         Task<Father?> UpdateAsync(Father father);
         Task<bool> DeleteAsync(int id);

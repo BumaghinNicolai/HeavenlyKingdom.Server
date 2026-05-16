@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace HeavenlyKingdom.Api.Filters
 {
-    public class AdminFilter : ActionFilterAttribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    public class AdminMod : ActionFilterAttribute
     {
+        public AdminMod() { Order = 1; }
+
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var isAdmin = context.HttpContext.Session.GetString("isAdmin");

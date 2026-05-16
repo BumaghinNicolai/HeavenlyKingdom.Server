@@ -1,3 +1,4 @@
+using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -12,19 +13,19 @@ namespace HeavenlyKingdom.Api.Controllers
         public OrderController(IOrderService service) => _service = service;
 
         [HttpGet("active")]
+        [UserMod]
         public async Task<IActionResult> GetActive()
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized();
-            return Ok(await _service.GetActiveAsync(userId.Value));
+            var userId = GetUserId()!.Value;
+            return Ok(await _service.GetActiveAsync(userId));
         }
 
         [HttpGet("history")]
+        [UserMod]
         public async Task<IActionResult> GetHistory()
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized();
-            return Ok(await _service.GetHistoryAsync(userId.Value));
+            var userId = GetUserId()!.Value;
+            return Ok(await _service.GetHistoryAsync(userId));
         }
 
         [HttpGet("{id}")]
@@ -35,11 +36,11 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpPost]
+        [UserMod]
         public async Task<IActionResult> Create([FromBody] CreateOrderDto dto)
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized();
-            var created = await _service.CreateAsync(userId.Value, dto);
+            var userId = GetUserId()!.Value;
+            var created = await _service.CreateAsync(userId, dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 

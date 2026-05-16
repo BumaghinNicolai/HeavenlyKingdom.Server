@@ -1,4 +1,5 @@
-﻿using HeavenlyKingdom.BusinessLogic.Interfaces;
+﻿using HeavenlyKingdom.Api.Filters;
+using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,9 +47,20 @@ namespace HeavenlyKingdom.Api.Controllers
             // Записываем сессию
             HttpContext.Session.SetString("userId", result.Id.ToString());
             HttpContext.Session.SetString("isAdmin", result.IsAdmin.ToString().ToLower());
+            HttpContext.Session.SetString("isFather", result.IsFather.ToString().ToLower());
 
             return Ok(result);
         }
+        [HttpPut("me")]
+        [UserMod]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
+        {
+            var raw = HttpContext.Session.GetString("userId");
+            if (!int.TryParse(raw, out var userId)) return Unauthorized();
+            var result = await _userService.UpdateProfileAsync(userId, dto);
+            return result == null ? NotFound() : Ok(result);
+        }
+
 
         [HttpPost("logout")]
         public IActionResult Logout()
@@ -56,6 +68,8 @@ namespace HeavenlyKingdom.Api.Controllers
             HttpContext.Session.Clear();
             return Ok(new { Message = "Logged out" });
         }
+
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

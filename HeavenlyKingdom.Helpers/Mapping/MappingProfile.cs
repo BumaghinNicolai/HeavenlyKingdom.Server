@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HeavenlyKingdom.Domain.DTOs;
 using HeavenlyKingdom.Domain.Entities;
 
@@ -20,7 +20,6 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<UpdateProductDto, Product>();
 
             // CartItem → плоский DTO под фронт
-            // img, name, cat, price тянем из вложенного Product
             CreateMap<CartItem, CartItemDto>()
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Product.Name))
                 .ForMember(d => d.Cat, o => o.MapFrom(s => s.Product.Category.Name))
@@ -38,16 +37,25 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<Father, FatherDto>();
             CreateMap<CreateFatherDto, Father>();
             CreateMap<UpdateFatherDto, Father>();
+            CreateMap<UpdateFatherProfileDto, Father>();
             
             // Candle
             CreateMap<Candle, CandleDto>();
             CreateMap<CreateCandleDto, Candle>();
             CreateMap<UpdateCandleDto, Candle>();
 
-            // Address
+            // Order (Объединено из Valera и логики main)
+            CreateMap<Order, OrderDto>()
+                .ForMember(d => d.Number, o => o.MapFrom(s => $"ORD-{s.Id:D5}"));
+
+            CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
+                .ForMember(d => d.ProductImg, o => o.MapFrom(s => s.Product.Img));
+
+            // Address (из ветки main)
             CreateMap<Address, AddressDto>();
 
-            // Notification
+            // Notification (из ветки main)
             CreateMap<Notification, NotificationDto>();
 
             // ChapelCandle
@@ -58,9 +66,13 @@ namespace HeavenlyKingdom.Helpers.Mapping
 
             // Holiday
             CreateMap<Holiday, HolidayDto>();
-            CreateMap<CreateHolidayDto, Holiday>();
 
-            // Favorite
+            // DonationGoal
+            CreateMap<DonationGoal, DonationGoalDto>()
+                .ForMember(d => d.ProgressPercent,
+                    o => o.MapFrom(s => s.Target == 0 ? 0 : Math.Round(s.Current / s.Target * 100, 2)));
+
+            // Favorite → плоский DTO с данными продукта
             CreateMap<Favorite, FavoriteDto>()
                 .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.Name))
                 .ForMember(d => d.ProductImg, o => o.MapFrom(s => s.Product.Img))

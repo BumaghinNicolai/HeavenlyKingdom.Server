@@ -15,13 +15,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\HeavenlyKingdom.BusinessLogic\HeavenlyKingdom.BusinessLogic.csproj" />
     <ProjectReference Include="..\HeavenlyKingdom.DataAccess\HeavenlyKingdom.DataAccess.csproj" />
-    <ProjectReference Include="..\HeavenlyKingdom.Domain\HeavenlyKingdom.Domain.csproj" />
     <ProjectReference Include="..\HeavenlyKingdom.Domain\HeavenlyKingdom.Domain.csproj" />
     <ProjectReference Include="..\HeavenlyKingdom.Helpers\HeavenlyKingdom.Helpers.csproj" />
   </ItemGroup>

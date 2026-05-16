@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.DataAccess.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
@@ -19,13 +19,14 @@ namespace HeavenlyKingdom.BusinessLogic.Services
 
         public async Task<UserResponseDto?> RegisterAsync(RegisterDto dto)
         {
-            // Проверяем что username не занят
-            var existing = await _repo.GetByUsernameAsync(dto.Username);
+            var existing = await _repo.GetByEmailAsync(dto.Email);
             if (existing != null) return null;
 
             var user = new User
             {
-                Username = dto.Username,
+                Name = dto.Name,
+                LastName = dto.LastName,
+                Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
             };
 
@@ -35,7 +36,7 @@ namespace HeavenlyKingdom.BusinessLogic.Services
 
         public async Task<UserResponseDto?> LoginAsync(LoginDto dto)
         {
-            var user = await _repo.GetByUsernameAsync(dto.Username);
+            var user = await _repo.GetByEmailAsync(dto.Email);
             if (user == null) return null;
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password)) return null;
             return _mapper.Map<UserResponseDto>(user);
@@ -51,6 +52,17 @@ namespace HeavenlyKingdom.BusinessLogic.Services
         {
             var users = await _repo.GetAllAsync();
             return _mapper.Map<IEnumerable<UserResponseDto>>(users);
+        }
+
+        public async Task<UserResponseDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto)
+        {
+            var user = await _repo.GetByIdAsync(userId);
+            if (user == null) return null;
+            user.Name = dto.Name;
+            user.LastName = dto.LastName;
+            user.Phone = dto.Phone;
+            await _repo.UpdateAsync(user);
+            return _mapper.Map<UserResponseDto>(user);
         }
 
         public async Task<bool> DeleteAsync(int id)

@@ -22,19 +22,19 @@ namespace HeavenlyKingdom.BusinessLogic.Services
         public async Task<List<OrderDto>> GetActiveAsync(int userId)
         {
             var orders = await _orderRepo.GetActiveByUserIdAsync(userId);
-            return orders.Select(MapToDto).ToList();
+            return _mapper.Map<List<OrderDto>>(orders);
         }
 
         public async Task<List<OrderDto>> GetHistoryAsync(int userId)
         {
             var orders = await _orderRepo.GetHistoryByUserIdAsync(userId);
-            return orders.Select(MapToDto).ToList();
+            return _mapper.Map<List<OrderDto>>(orders);
         }
 
         public async Task<OrderDto?> GetByIdAsync(int id)
         {
             var order = await _orderRepo.GetByIdAsync(id);
-            return order == null ? null : MapToDto(order);
+            return order == null ? null : _mapper.Map<OrderDto>(order);
         }
 
         public async Task<OrderDto> CreateAsync(int userId, CreateOrderDto dto)
@@ -42,19 +42,19 @@ namespace HeavenlyKingdom.BusinessLogic.Services
             var items = new List<OrderItem>();
             decimal total = 0;
 
-            foreach (var item in dto.Items)
+            foreach (var itemDto in dto.Items)
             {
-                var product = await _productRepo.GetByIdAsync(item.ProductId);
+                var product = await _productRepo.GetByIdAsync(itemDto.ProductId);
                 if (product == null) continue;
 
                 items.Add(new OrderItem
                 {
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
+                    ProductId = itemDto.ProductId,
+                    Quantity = itemDto.Quantity,
                     Price = product.Price
                 });
 
-                total += product.Price * item.Quantity;
+                total += product.Price * itemDto.Quantity;
             }
 
             var order = new Order
@@ -67,26 +67,11 @@ namespace HeavenlyKingdom.BusinessLogic.Services
                 Items = items
             };
 
-            var created = await _orderRepo.AddAsync(order);
-            var full = await _orderRepo.GetByIdAsync(created.Id);
-            return MapToDto(full!);
+            await _orderRepo.AddAsync(order);
+            
+            // Получаем заказ с подгруженными данными (Eager Loading) для корректного маппинга
+            var fullOrder = await _orderRepo.GetByIdAsync(order.Id);
+            return _mapper.Map<OrderDto>(fullOrder!);
         }
-
-        private static OrderDto MapToDto(Order o) => new()
-        {
-            Id = o.Id,
-            Number = $"ORD-{o.Id:D5}",
-            CreatedAt = o.CreatedAt,
-            Status = o.Status,
-            TotalAmount = o.TotalAmount,
-            Items = o.Items.Select(i => new OrderItemDto
-            {
-                Id = i.Id,
-                ProductName = i.Product?.Name ?? string.Empty,
-                ProductImg = i.Product?.Img ?? string.Empty,
-                Quantity = i.Quantity,
-                Price = i.Price
-            }).ToList()
-        };
     }
 }

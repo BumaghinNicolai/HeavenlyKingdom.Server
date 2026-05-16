@@ -182,6 +182,29 @@ namespace HeavenlyKingdom.DataAccess.Migrations
                     b.ToTable("ChapelCandles");
                 });
 
+            modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.DonationGoal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Current")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Target")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DonationGoals");
+                });
+
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Father", b =>
                 {
                     b.Property<int>("Id")
@@ -189,6 +212,13 @@ namespace HeavenlyKingdom.DataAccess.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Diocese")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Facebook")
                         .HasColumnType("nvarchar(max)");
@@ -203,7 +233,19 @@ namespace HeavenlyKingdom.DataAccess.Migrations
                     b.Property<string>("Instagram")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Parish")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Position")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -214,10 +256,17 @@ namespace HeavenlyKingdom.DataAccess.Migrations
                     b.Property<string>("Telegram")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Youtube")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Fathers");
                 });
@@ -413,7 +462,13 @@ namespace HeavenlyKingdom.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("OnSale")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SalePrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -473,7 +528,7 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Address", b =>
                 {
                     b.HasOne("HeavenlyKingdom.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -484,7 +539,7 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.CartItem", b =>
                 {
                     b.HasOne("HeavenlyKingdom.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("CartItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -495,8 +550,18 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.ChapelCandle", b =>
                 {
                     b.HasOne("HeavenlyKingdom.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("ChapelCandles")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Father", b =>
+                {
+                    b.HasOne("HeavenlyKingdom.Domain.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("HeavenlyKingdom.Domain.Entities.Father", "UserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("User");
@@ -505,13 +570,13 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Favorite", b =>
                 {
                     b.HasOne("HeavenlyKingdom.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("Favorites")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HeavenlyKingdom.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Favorites")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -524,7 +589,7 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Indulgence", b =>
                 {
                     b.HasOne("HeavenlyKingdom.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Indulgences")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -534,7 +599,7 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Notification", b =>
                 {
                     b.HasOne("HeavenlyKingdom.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Notifications")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -545,13 +610,13 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Order", b =>
                 {
                     b.HasOne("HeavenlyKingdom.Domain.Entities.Address", "Address")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HeavenlyKingdom.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -570,7 +635,7 @@ namespace HeavenlyKingdom.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("HeavenlyKingdom.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -591,6 +656,11 @@ namespace HeavenlyKingdom.DataAccess.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Address", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
@@ -599,6 +669,30 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Order", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("CartItems");
+
+                    b.Navigation("Favorites");
+
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("ChapelCandles");
+
+                    b.Navigation("Favorites");
+
+                    b.Navigation("Indulgences");
+
+                    b.Navigation("Notifications");
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }
