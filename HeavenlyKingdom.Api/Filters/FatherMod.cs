@@ -10,9 +10,9 @@ namespace HeavenlyKingdom.Api.Filters
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var isFather = context.HttpContext.Session.GetString("isFather");
+            var role = context.HttpContext.Session.GetString("role");
 
-            if (isFather != "true")
+            if (role != "1")
             {
                 context.Result = new JsonResult(new { Message = "Access denied. Fathers only." })
                 {

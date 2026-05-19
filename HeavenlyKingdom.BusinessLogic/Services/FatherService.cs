@@ -69,5 +69,18 @@ namespace HeavenlyKingdom.BusinessLogic.Services
             var orders = await _orderRepo.GetAllAsync();
             return _mapper.Map<IEnumerable<OrderDto>>(orders);
         }
+
+        public async Task EnsureProfileAsync(int userId, string name, string lastName)
+        {
+            var existing = await _repo.GetByUserIdAsync(userId);
+            if (existing != null) return;
+
+            await _repo.AddAsync(new Domain.Entities.Father
+            {
+                Name     = name,
+                LastName = lastName,
+                UserId   = userId,
+            });
+        }
     }
 }

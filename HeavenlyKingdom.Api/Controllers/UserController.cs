@@ -1,4 +1,5 @@
-﻿using HeavenlyKingdom.BusinessLogic.Interfaces;
+﻿using HeavenlyKingdom.Api.Filters;
+using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,6 +35,10 @@ namespace HeavenlyKingdom.Api.Controllers
 
             var result = await _userService.RegisterAsync(dto);
             if (result == null) return Conflict(new { Message = "Email already taken" });
+
+            HttpContext.Session.SetString("userId", result.Id.ToString());
+            HttpContext.Session.SetString("role", ((int)result.Role).ToString());
+
             return Created($"/api/user/{result.Id}", result);
         }
 
@@ -43,12 +48,21 @@ namespace HeavenlyKingdom.Api.Controllers
             var result = await _userService.LoginAsync(dto);
             if (result == null) return Unauthorized(new { Message = "Invalid email or password" });
 
-            // Записываем сессию
             HttpContext.Session.SetString("userId", result.Id.ToString());
-            HttpContext.Session.SetString("isAdmin", result.IsAdmin.ToString().ToLower());
-            HttpContext.Session.SetString("isFather", result.IsFather.ToString().ToLower());
+            HttpContext.Session.SetString("role", ((int)result.Role).ToString());
 
             return Ok(result);
+        }
+
+        [HttpPut("me")]
+        [UserMod]
+        public async Task<IActionResult> UpdateMe([FromBody] UpdateUserDto dto)
+        {
+            var raw = HttpContext.Session.GetString("userId");
+            if (!int.TryParse(raw, out var userId)) return Unauthorized();
+            var result = await _userService.UpdateAsync(userId, dto);
+            if (result == null) return NotFound(new { Message = "User not found" });
+            return Ok(new { result.Name, result.LastName, result.Phone });
         }
 
         [HttpPost("logout")]

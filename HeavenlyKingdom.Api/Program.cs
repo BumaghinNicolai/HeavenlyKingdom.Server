@@ -3,6 +3,8 @@ using HeavenlyKingdom.BusinessLogic.Services;
 using HeavenlyKingdom.DataAccess.Context;
 using HeavenlyKingdom.DataAccess.Interfaces;
 using HeavenlyKingdom.DataAccess.Repositories;
+using HeavenlyKingdom.Domain.Entities;
+using HeavenlyKingdom.Domain.Enums;
 using HeavenlyKingdom.Helpers.Mapping;
 using Microsoft.EntityFrameworkCore;
 
@@ -53,7 +55,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("Frontend", policy =>
         policy.WithOrigins("http://localhost:5173")
               .AllowAnyHeader()
-              .AllowAnyMethod());
+              .AllowAnyMethod()
+              .AllowCredentials());
 });
 
 // 6. Базовые сервисы API
@@ -84,11 +87,24 @@ app.UseSession();
 app.UseAuthorization(); // Желательно добавить, если планируется аутентификация
 app.MapControllers();
 
-// Автоматическое применение миграций при запуске
+// Автоматическое применение миграций при запуске + сид администратора
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+
+    if (!db.Users.Any(u => u.Role == UserRole.Admin))
+    {
+        db.Users.Add(new User
+        {
+            Name = "Admin",
+            LastName = "",
+            Email = "admin@heavenly.com",
+            Password = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+            Role = UserRole.Admin
+        });
+        db.SaveChanges();
+    }
 }
 
 app.Run();

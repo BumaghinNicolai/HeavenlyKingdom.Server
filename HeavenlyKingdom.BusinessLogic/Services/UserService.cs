@@ -3,6 +3,7 @@ using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.DataAccess.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using HeavenlyKingdom.Domain.Entities;
+using HeavenlyKingdom.Domain.Enums;
 
 namespace HeavenlyKingdom.BusinessLogic.Services
 {
@@ -60,6 +61,37 @@ namespace HeavenlyKingdom.BusinessLogic.Services
             if (user == null) return false;
             await _repo.DeleteAsync(id);
             return true;
+        }
+
+        public async Task<UserResponseDto?> UpdateAsync(int id, UpdateUserDto dto)
+        {
+            var user = await _repo.GetByIdAsync(id);
+            if (user == null) return null;
+            user.Name = dto.Name;
+            user.LastName = dto.LastName;
+            user.Phone = dto.Phone;
+            await _repo.UpdateAsync(user);
+            return _mapper.Map<UserResponseDto>(user);
+        }
+
+        public async Task<UserResponseDto?> SetRoleAsync(int id, UserRole role)
+        {
+            var user = await _repo.GetByIdAsync(id);
+            if (user == null) return null;
+            user.Role = role;
+            await _repo.UpdateAsync(user);
+            return _mapper.Map<UserResponseDto>(user);
+        }
+
+        public async Task<UserResponseDto?> AdminUpdateAsync(int id, AdminUpdateUserDto dto)
+        {
+            var user = await _repo.GetByIdAsync(id);
+            if (user == null) return null;
+            user.Name = dto.Name;
+            user.LastName = dto.LastName;
+            user.Email = dto.Email;
+            await _repo.UpdateAsync(user);
+            return _mapper.Map<UserResponseDto>(user);
         }
     }
 }
