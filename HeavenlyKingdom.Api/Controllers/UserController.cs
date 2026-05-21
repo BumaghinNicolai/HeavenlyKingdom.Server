@@ -64,18 +64,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
 
-        [HttpPut("me")]
-        [UserMod]
-        public async Task<IActionResult> UpdateMe([FromBody] UpdateUserDto dto)
-        {
-            var raw = HttpContext.Session.GetString("userId");
-            if (!int.TryParse(raw, out var userId)) return Unauthorized();
-            var result = await _userService.UpdateAsync(userId, dto);
-            if (result == null) return NotFound(new { Message = "User not found" });
-            return Ok(new { result.Name, result.LastName, result.Phone });
-        }
-
-        [HttpPost("logout")]
+[HttpPost("logout")]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
