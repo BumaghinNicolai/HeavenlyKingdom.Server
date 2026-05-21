@@ -35,6 +35,10 @@ namespace HeavenlyKingdom.Api.Controllers
 
             var result = await _userService.RegisterAsync(dto);
             if (result == null) return Conflict(new { Message = "Email already taken" });
+
+            HttpContext.Session.SetString("userId", result.Id.ToString());
+            HttpContext.Session.SetString("role", ((int)result.Role).ToString());
+
             return Created($"/api/user/{result.Id}", result);
         }
 
@@ -44,10 +48,8 @@ namespace HeavenlyKingdom.Api.Controllers
             var result = await _userService.LoginAsync(dto);
             if (result == null) return Unauthorized(new { Message = "Invalid email or password" });
 
-            // Записываем сессию
             HttpContext.Session.SetString("userId", result.Id.ToString());
-            HttpContext.Session.SetString("isAdmin", result.IsAdmin.ToString().ToLower());
-            HttpContext.Session.SetString("isFather", result.IsFather.ToString().ToLower());
+            HttpContext.Session.SetString("role", ((int)result.Role).ToString());
 
             return Ok(result);
         }
@@ -62,7 +64,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
 
-        [HttpPost("logout")]
+[HttpPost("logout")]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();

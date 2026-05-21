@@ -1,4 +1,5 @@
 ﻿using HeavenlyKingdom.Domain.DTOs;
+using HeavenlyKingdom.Domain.Enums;
 
 namespace HeavenlyKingdom.BusinessLogic.Interfaces
 {
@@ -10,5 +11,8 @@ namespace HeavenlyKingdom.BusinessLogic.Interfaces
         Task<IEnumerable<UserResponseDto>> GetAllAsync();
         Task<UserResponseDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto);
         Task<bool> DeleteAsync(int id);
+        Task<UserResponseDto?> UpdateAsync(int id, UpdateUserDto dto);
+        Task<UserResponseDto?> SetRoleAsync(int id, UserRole role);
+        Task<UserResponseDto?> AdminUpdateAsync(int id, AdminUpdateUserDto dto);
     }
 }
