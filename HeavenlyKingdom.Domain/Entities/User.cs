@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using HeavenlyKingdom.Domain.Enums;
 
 namespace HeavenlyKingdom.Domain.Entities
 {
@@ -10,14 +11,12 @@ namespace HeavenlyKingdom.Domain.Entities
         public int Id { get; set; }
 
         public string Name { get; set; } = string.Empty;
-        public string Username { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Avatar { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public bool IsAdmin { get; set; } = false;
-        public bool IsFather { get; set; } = false;
+        public UserRole Role { get; set; } = UserRole.User;
 
         [InverseProperty("User")]
         public List<Address> Addresses { get; set; } = new();
