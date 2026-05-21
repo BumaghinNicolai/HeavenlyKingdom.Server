@@ -12,5 +12,6 @@ namespace HeavenlyKingdom.BusinessLogic.Interfaces
         Task<FatherDto?> UpdateProfileAsync(int userId, UpdateFatherProfileDto dto);
         Task<bool> DeleteAsync(int id);
         Task<IEnumerable<OrderDto>> GetAllOrdersAsync();
+        Task EnsureProfileAsync(int userId, string name, string lastName);
     }
 }

@@ -10,9 +10,9 @@ namespace HeavenlyKingdom.Api.Filters
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var isAdmin = context.HttpContext.Session.GetString("isAdmin");
+            var role = context.HttpContext.Session.GetString("role");
 
-            if (isAdmin != "true")
+            if (role != "2")
             {
                 context.Result = new JsonResult(new { Message = "Access denied. Admins only." })
                 {
