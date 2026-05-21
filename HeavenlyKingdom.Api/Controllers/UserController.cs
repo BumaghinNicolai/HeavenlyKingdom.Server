@@ -13,6 +13,7 @@ namespace HeavenlyKingdom.Api.Controllers
         public UserController(IUserService userService) => _userService = userService;
 
         [HttpGet("all")]
+        [AdminMod]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAllAsync();
