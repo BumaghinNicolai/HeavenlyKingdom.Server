@@ -39,11 +39,6 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<UpdateFatherDto, Father>();
             CreateMap<UpdateFatherProfileDto, Father>();
             
-            // Candle
-            CreateMap<Candle, CandleDto>();
-            CreateMap<CreateCandleDto, Candle>();
-            CreateMap<UpdateCandleDto, Candle>();
-
             // Order (Объединено из Valera и логики main)
             CreateMap<Order, OrderDto>()
                 .ForMember(d => d.Number, o => o.MapFrom(s => $"ORD-{s.Id:D5}"));
@@ -71,6 +66,11 @@ namespace HeavenlyKingdom.Helpers.Mapping
             CreateMap<DonationGoal, DonationGoalDto>()
                 .ForMember(d => d.ProgressPercent,
                     o => o.MapFrom(s => s.Target == 0 ? 0 : Math.Round(s.Current / s.Target * 100, 2)));
+
+            // ServiceOrder
+            CreateMap<ServiceOrder, ServiceOrderDto>()
+                .ForMember(d => d.FatherName, o => o.MapFrom(s =>
+                    s.Father != null ? s.Father.Name + " " + s.Father.LastName : null));
 
             // Favorite → плоский DTO с данными продукта
             CreateMap<Favorite, FavoriteDto>()

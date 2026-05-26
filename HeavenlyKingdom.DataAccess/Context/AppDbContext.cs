@@ -12,7 +12,6 @@ namespace HeavenlyKingdom.DataAccess.Context
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Father> Fathers { get; set; }
-        public DbSet<Candle> Candles { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
@@ -22,6 +21,8 @@ namespace HeavenlyKingdom.DataAccess.Context
         public DbSet<Indulgence> Indulgences { get; set; }
         public DbSet<Holiday> Holidays { get; set; }
         public DbSet<DonationGoal> DonationGoals { get; set; }
+        public DbSet<Donation> Donations { get; set; }
+        public DbSet<ServiceOrder> ServiceOrders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

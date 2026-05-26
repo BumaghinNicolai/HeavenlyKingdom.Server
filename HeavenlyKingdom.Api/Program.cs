@@ -20,7 +20,6 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFatherRepository, FatherRepository>();
-builder.Services.AddScoped<ICandleRepository, CandleRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
@@ -29,6 +28,7 @@ builder.Services.AddScoped<IChapelRepository, ChapelRepository>();
 builder.Services.AddScoped<IIndulgenceRepository, IndulgenceRepository>();
 builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
 builder.Services.AddScoped<IDonationRepository, DonationRepository>();
+builder.Services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
 
 // 3. Сервисы (BLL)
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -36,7 +36,6 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFatherService, FatherService>();
-builder.Services.AddScoped<ICandleService, CandleService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
@@ -45,6 +44,7 @@ builder.Services.AddScoped<IChapelService, ChapelService>();
 builder.Services.AddScoped<IIndulgenceService, IndulgenceService>();
 builder.Services.AddScoped<IHolidayService, HolidayService>();
 builder.Services.AddScoped<IDonationService, DonationService>();
+builder.Services.AddScoped<IServiceOrderService, ServiceOrderService>();
 
 // 4. AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
