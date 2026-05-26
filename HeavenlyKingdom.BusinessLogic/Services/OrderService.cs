@@ -31,10 +31,28 @@ namespace HeavenlyKingdom.BusinessLogic.Services
             return _mapper.Map<List<OrderDto>>(orders);
         }
 
-        public async Task<OrderDto?> GetByIdAsync(int id)
+        public async Task<OrderDto?> GetByIdAsync(int id, int userId, bool isAdmin)
         {
             var order = await _orderRepo.GetByIdAsync(id);
-            return order == null ? null : _mapper.Map<OrderDto>(order);
+            if (order == null) return null;
+            if (!isAdmin && order.UserId != userId) return null;
+            return _mapper.Map<OrderDto>(order);
+        }
+
+        public async Task<List<ProductSalesDto>> GetProductSalesAsync()
+        {
+            var orders = await _orderRepo.GetAllAsync();
+            return orders
+                .SelectMany(o => o.Items)
+                .GroupBy(i => new { i.ProductId, i.Product.Name })
+                .Select(g => new ProductSalesDto
+                {
+                    ProductId = g.Key.ProductId,
+                    ProductName = g.Key.Name,
+                    TotalSold = g.Sum(i => i.Quantity)
+                })
+                .OrderByDescending(p => p.TotalSold)
+                .ToList();
         }
 
         public async Task<OrderDto> CreateAsync(int userId, CreateOrderDto dto)

@@ -13,17 +13,20 @@ namespace HeavenlyKingdom.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IFatherService _fatherService;
+        private readonly IOrderService _orderService;
 
-        public AdminController(IUserService userService, IFatherService fatherService)
+        public AdminController(IUserService userService, IFatherService fatherService, IOrderService orderService)
         {
             _userService   = userService;
             _fatherService = fatherService;
+            _orderService  = orderService;
         }
 
         [HttpGet("stats")]
-        public IActionResult GetStats()
+        public async Task<IActionResult> GetStats()
         {
-            return Ok(new { Message = "Admin stats - access granted" });
+            var sales = await _orderService.GetProductSalesAsync();
+            return Ok(sales);
         }
 
         [HttpGet("users")]
