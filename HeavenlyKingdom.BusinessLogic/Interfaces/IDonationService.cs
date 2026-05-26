@@ -8,5 +8,6 @@ namespace HeavenlyKingdom.BusinessLogic.Interfaces
         Task<DonationGoalDto> UpdateGoalAsync(UpdateDonationGoalDto dto);
         Task<DonationGoalDto> AddProgressAsync(AddProgressDto dto);
         Task<DonationGoalDto> ResetAsync();
+        Task<List<DonationEntryDto>> GetHistoryAsync();
     }
 }

@@ -8,5 +8,6 @@ namespace HeavenlyKingdom.DataAccess.Interfaces
         Task<ChapelCandle> AddAsync(ChapelCandle candle);
         Task DeleteAsync(int id);
         Task DeleteExpiredAsync();
+        Task<List<ChapelCandle>> GetByUserIdAsync(int userId);
     }
 }

@@ -19,4 +19,11 @@ namespace HeavenlyKingdom.Domain.DTOs
     {
         public decimal Amount { get; set; }
     }
+
+    public class DonationEntryDto
+    {
+        public int Id { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
 }

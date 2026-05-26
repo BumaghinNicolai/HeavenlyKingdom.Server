@@ -26,9 +26,15 @@ namespace HeavenlyKingdom.DataAccess.Repositories
                 ?? throw new InvalidOperationException("Donation goal not found");
 
             goal.Current += amount;
+            _context.Donations.Add(new Donation { Amount = amount, CreatedAt = DateTime.UtcNow });
             await _context.SaveChangesAsync();
             return goal;
         }
+
+        public async Task<List<Donation>> GetHistoryAsync() =>
+            await _context.Donations
+                .OrderByDescending(d => d.CreatedAt)
+                .ToListAsync();
 
         public async Task<DonationGoal> ResetAsync()
         {
