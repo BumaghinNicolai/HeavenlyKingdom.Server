@@ -45,5 +45,16 @@ namespace HeavenlyKingdom.BusinessLogic.Services
             var updated = await _repo.ResetAsync();
             return _mapper.Map<DonationGoalDto>(updated);
         }
+
+        public async Task<List<DonationEntryDto>> GetHistoryAsync()
+        {
+            var entries = await _repo.GetHistoryAsync();
+            return entries.Select(d => new DonationEntryDto
+            {
+                Id        = d.Id,
+                Amount    = d.Amount,
+                CreatedAt = d.CreatedAt,
+            }).ToList();
+        }
     }
 }
