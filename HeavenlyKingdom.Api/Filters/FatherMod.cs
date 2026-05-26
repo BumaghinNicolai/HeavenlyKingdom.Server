@@ -12,7 +12,7 @@ namespace HeavenlyKingdom.Api.Filters
         {
             var role = context.HttpContext.Session.GetString("role");
 
-            if (role != "1")
+            if (role != "1" && role != "2")
             {
                 context.Result = new JsonResult(new { Message = "Access denied. Fathers only." })
                 {

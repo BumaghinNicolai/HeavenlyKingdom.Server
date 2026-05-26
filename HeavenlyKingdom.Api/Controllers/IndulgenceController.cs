@@ -1,3 +1,4 @@
+using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -20,11 +21,10 @@ namespace HeavenlyKingdom.Api.Controllers
 
         // GET /api/indulgences
         [HttpGet]
+        [UserMod]
         public async Task<IActionResult> GetHistory()
         {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized(new { Message = "Not logged in" });
-            var result = await _indulgenceService.GetHistoryAsync(userId.Value);
+            var result = await _indulgenceService.GetHistoryAsync(GetUserId()!.Value);
             return Ok(result);
         }
 
