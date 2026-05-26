@@ -21,11 +21,20 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [AdminMod]
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _userService.GetByIdAsync(id);
             if (user == null) return NotFound(new { Message = $"User {id} not found" });
             return Ok(user);
+        }
+
+        [HttpGet("session/refresh")]
+        [UserMod]
+        public IActionResult RefreshSession()
+        {
+            _ = HttpContext.Session.GetString("userId");
+            return Ok(new { Message = "Session refreshed" });
         }
 
         [HttpPost("register")]
@@ -75,6 +84,7 @@ namespace HeavenlyKingdom.Api.Controllers
 
 
         [HttpDelete("{id}")]
+        [AdminMod]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _userService.DeleteAsync(id);
