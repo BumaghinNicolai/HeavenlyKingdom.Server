@@ -1,4 +1,5 @@
-﻿using HeavenlyKingdom.BusinessLogic.Interfaces;
+﻿using HeavenlyKingdom.Api.Filters;
+using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,7 @@ namespace HeavenlyKingdom.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [UserMod]
     public class CartController : ControllerBase
     {
         private readonly ICartService _service;
