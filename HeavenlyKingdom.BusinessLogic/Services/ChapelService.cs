@@ -53,10 +53,18 @@ namespace HeavenlyKingdom.BusinessLogic.Services
             return _mapper.Map<ChapelCandleDto>(created);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<List<ChapelCandleDto>> GetMyAsync(int userId)
+        {
+            var candles = await _repo.GetByUserIdAsync(userId);
+            return _mapper.Map<List<ChapelCandleDto>>(candles);
+        }
+
+        public async Task<bool?> DeleteAsync(int id, int? userId, bool isAdmin)
         {
             var candles = await _repo.GetActiveAsync();
-            if (!candles.Any(c => c.Id == id)) return false;
+            var candle = candles.FirstOrDefault(c => c.Id == id);
+            if (candle == null) return false;
+            if (!isAdmin && candle.UserId != userId) return null;
             await _repo.DeleteAsync(id);
             return true;
         }

@@ -6,6 +6,7 @@ namespace HeavenlyKingdom.BusinessLogic.Interfaces
     {
         Task<List<ChapelCandleDto>> GetActiveAsync();
         Task<ChapelCandleDto?> PlaceCandleAsync(int? userId, PlaceCandleDto dto);
-        Task<bool> DeleteAsync(int id);
+        Task<bool?> DeleteAsync(int id, int? userId, bool isAdmin);
+        Task<List<ChapelCandleDto>> GetMyAsync(int userId);
     }
 }

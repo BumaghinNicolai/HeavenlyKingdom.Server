@@ -49,5 +49,14 @@ namespace HeavenlyKingdom.Api.Controllers
             var result = await _donationService.ResetAsync();
             return Ok(result);
         }
+
+        // GET /api/admin/donations/history
+        [HttpGet("history")]
+        [AdminMod]
+        public async Task<IActionResult> GetHistory()
+        {
+            var result = await _donationService.GetHistoryAsync();
+            return Ok(result);
+        }
     }
 }

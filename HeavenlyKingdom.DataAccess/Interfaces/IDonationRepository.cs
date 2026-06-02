@@ -8,5 +8,6 @@ namespace HeavenlyKingdom.DataAccess.Interfaces
         Task<DonationGoal> UpdateGoalAsync(DonationGoal goal);
         Task<DonationGoal> AddProgressAsync(decimal amount);
         Task<DonationGoal> ResetAsync();
+        Task<List<Donation>> GetHistoryAsync();
     }
 }

@@ -1,3 +1,4 @@
+using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -36,13 +37,30 @@ namespace HeavenlyKingdom.Api.Controllers
             return Created("/api/chapel/candles", result);
         }
 
+        // GET /api/chapel/my-candles
+        [HttpGet("my-candles")]
+        [UserMod]
+        public async Task<IActionResult> GetMy()
+        {
+            var userId = GetUserId()!.Value;
+            var result = await _chapelService.GetMyAsync(userId);
+            return Ok(result);
+        }
+
         // DELETE /api/chapel/candles/{id}
         [HttpDelete("candles/{id}")]
+        [UserMod]
         public async Task<IActionResult> Delete(int id)
         {
-            var success = await _chapelService.DeleteAsync(id);
-            if (!success) return NotFound(new { Message = "Candle not found" });
-            return NoContent();
+            var userId = GetUserId();
+            var isAdmin = HttpContext.Session.GetString("role") == "2";
+            var result = await _chapelService.DeleteAsync(id, userId, isAdmin);
+            return result switch
+            {
+                null  => StatusCode(403, new { Message = "You don't have permission to delete this candle" }),
+                false => NotFound(new { Message = "Candle not found" }),
+                _     => NoContent()
+            };
         }
     }
 }

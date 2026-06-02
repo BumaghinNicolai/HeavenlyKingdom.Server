@@ -33,6 +33,12 @@ namespace HeavenlyKingdom.DataAccess.Repositories
             }
         }
 
+        public async Task<List<ChapelCandle>> GetByUserIdAsync(int userId) =>
+            await _context.ChapelCandles
+                .Where(c => c.UserId == userId)
+                .OrderByDescending(c => c.PlacedAt)
+                .ToListAsync();
+
         public async Task DeleteExpiredAsync()
         {
             var expired = await _context.ChapelCandles

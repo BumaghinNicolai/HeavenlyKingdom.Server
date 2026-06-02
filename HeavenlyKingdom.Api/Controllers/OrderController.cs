@@ -29,9 +29,12 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [UserMod]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await _service.GetByIdAsync(id);
+            var userId = GetUserId()!.Value;
+            var isAdmin = HttpContext.Session.GetString("role") == "2";
+            var result = await _service.GetByIdAsync(id, userId, isAdmin);
             return result == null ? NotFound() : Ok(result);
         }
 
