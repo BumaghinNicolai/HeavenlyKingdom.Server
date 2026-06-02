@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
 
 namespace HeavenlyKingdom.Api.Filters
 {
@@ -10,7 +11,7 @@ namespace HeavenlyKingdom.Api.Filters
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var userId = context.HttpContext.Session.GetString("userId");
+            var userId = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrEmpty(userId))
             {
