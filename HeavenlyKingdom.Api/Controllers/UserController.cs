@@ -1,7 +1,9 @@
-﻿using HeavenlyKingdom.Api.Filters;
+using HeavenlyKingdom.Api.Filters;
+using HeavenlyKingdom.Api.Services;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HeavenlyKingdom.Api.Controllers
 {
@@ -10,7 +12,13 @@ namespace HeavenlyKingdom.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService) => _userService = userService;
+        private readonly JwtService _jwtService;
+
+        public UserController(IUserService userService, JwtService jwtService)
+        {
+            _userService = userService;
+            _jwtService = jwtService;
+        }
 
         [HttpGet("all")]
         [AdminMod]
@@ -33,8 +41,7 @@ namespace HeavenlyKingdom.Api.Controllers
         [UserMod]
         public IActionResult RefreshSession()
         {
-            _ = HttpContext.Session.GetString("userId");
-            return Ok(new { Message = "Session refreshed" });
+            return Ok(new { Message = "Token valid" });
         }
 
         [HttpPost("register")]
@@ -46,10 +53,8 @@ namespace HeavenlyKingdom.Api.Controllers
             var result = await _userService.RegisterAsync(dto);
             if (result == null) return Conflict(new { Message = "Email already taken" });
 
-            HttpContext.Session.SetString("userId", result.Id.ToString());
-            HttpContext.Session.SetString("role", ((int)result.Role).ToString());
-
-            return Created($"/api/user/{result.Id}", result);
+            var token = _jwtService.GenerateToken(result);
+            return Created($"/api/user/{result.Id}", new AuthResponseDto { Token = token, User = result });
         }
 
         [HttpPost("login")]
@@ -58,30 +63,25 @@ namespace HeavenlyKingdom.Api.Controllers
             var result = await _userService.LoginAsync(dto);
             if (result == null) return Unauthorized(new { Message = "Invalid email or password" });
 
-            HttpContext.Session.SetString("userId", result.Id.ToString());
-            HttpContext.Session.SetString("role", ((int)result.Role).ToString());
-
-            return Ok(result);
+            var token = _jwtService.GenerateToken(result);
+            return Ok(new AuthResponseDto { Token = token, User = result });
         }
+
         [HttpPut("me")]
         [UserMod]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
         {
-            var raw = HttpContext.Session.GetString("userId");
+            var raw = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!int.TryParse(raw, out var userId)) return Unauthorized();
             var result = await _userService.UpdateProfileAsync(userId, dto);
             return result == null ? NotFound() : Ok(result);
         }
 
-
-[HttpPost("logout")]
+        [HttpPost("logout")]
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
             return Ok(new { Message = "Logged out" });
         }
-
-
 
         [HttpDelete("{id}")]
         [AdminMod]

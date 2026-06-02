@@ -1,3 +1,4 @@
+using HeavenlyKingdom.Api.Services;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.BusinessLogic.Services;
 using HeavenlyKingdom.DataAccess.Context;
@@ -6,11 +7,14 @@ using HeavenlyKingdom.DataAccess.Repositories;
 using HeavenlyKingdom.Domain.Entities;
 using HeavenlyKingdom.Domain.Enums;
 using HeavenlyKingdom.Helpers.Mapping;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Настройка SQL Server
+// 1. SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
@@ -46,10 +50,28 @@ builder.Services.AddScoped<IHolidayService, HolidayService>();
 builder.Services.AddScoped<IDonationService, DonationService>();
 builder.Services.AddScoped<IServiceOrderService, ServiceOrderService>();
 
-// 4. AutoMapper
+// 4. JWT
+builder.Services.AddSingleton<JwtService>();
+var jwtKey = builder.Configuration["Jwt:Key"]!;
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+
+// 5. AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// 5. CORS для фронтенда (Vite)
+// 6. CORS для фронтенда (Vite)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
@@ -59,23 +81,38 @@ builder.Services.AddCors(options =>
               .AllowCredentials());
 });
 
-// 6. Базовые сервисы API
+// 7. Базовые сервисы API
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// 7. Сессии и кэш
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
+builder.Services.AddSwaggerGen(c =>
 {
-    options.IdleTimeout = TimeSpan.FromHours(1);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Введите JWT токен"
+    });
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
 
 var app = builder.Build();
 
-// Настройка Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -83,11 +120,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("Frontend");
-app.UseSession();
-app.UseAuthorization(); // Желательно добавить, если планируется аутентификация
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
-// Автоматическое применение миграций при запуске + сид администратора
+// Применение миграций + сид администратора
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();

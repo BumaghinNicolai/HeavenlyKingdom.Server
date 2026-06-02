@@ -2,6 +2,7 @@ using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HeavenlyKingdom.Api.Controllers
 {
@@ -27,7 +28,7 @@ namespace HeavenlyKingdom.Api.Controllers
         [FatherMod]
         public async Task<IActionResult> GetMe()
         {
-            var userIdStr = HttpContext.Session.GetString("userId");
+            var userIdStr = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!int.TryParse(userIdStr, out var userId)) return Unauthorized();
             var result = await _service.GetByUserIdAsync(userId);
             return result == null ? NotFound() : Ok(result);
@@ -37,7 +38,7 @@ namespace HeavenlyKingdom.Api.Controllers
         [FatherMod]
         public async Task<IActionResult> UpdateMe([FromBody] UpdateFatherProfileDto dto)
         {
-            var userIdStr = HttpContext.Session.GetString("userId");
+            var userIdStr = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!int.TryParse(userIdStr, out var userId)) return Unauthorized();
             var result = await _service.UpdateProfileAsync(userId, dto);
             return result == null ? NotFound() : Ok(result);

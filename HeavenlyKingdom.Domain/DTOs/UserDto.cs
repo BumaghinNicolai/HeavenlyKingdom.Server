@@ -52,4 +52,10 @@ namespace HeavenlyKingdom.Domain.DTOs
         public string Avatar { get; set; } = string.Empty;
         public UserRole Role { get; set; } = UserRole.User;
     }
+
+    public class AuthResponseDto
+    {
+        public string Token { get; set; } = string.Empty;
+        public UserResponseDto User { get; set; } = null!;
+    }
 }

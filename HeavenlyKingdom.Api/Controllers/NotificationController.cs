@@ -1,6 +1,7 @@
 using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HeavenlyKingdom.Api.Controllers
 {
@@ -14,7 +15,7 @@ namespace HeavenlyKingdom.Api.Controllers
 
         private int? GetUserId()
         {
-            var raw = HttpContext.Session.GetString("userId");
+            var raw = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.TryParse(raw, out var id) ? id : null;
         }
 
