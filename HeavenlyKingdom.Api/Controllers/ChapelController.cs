@@ -2,6 +2,7 @@ using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HeavenlyKingdom.Api.Controllers
 {
@@ -15,7 +16,7 @@ namespace HeavenlyKingdom.Api.Controllers
 
         private int? GetUserId()
         {
-            var raw = HttpContext.Session.GetString("userId");
+            var raw = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.TryParse(raw, out var id) ? id : null;
         }
 
@@ -53,7 +54,7 @@ namespace HeavenlyKingdom.Api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var userId = GetUserId();
-            var isAdmin = HttpContext.Session.GetString("role") == "2";
+            var isAdmin = HttpContext.User.FindFirstValue(ClaimTypes.Role) == "2";
             var result = await _chapelService.DeleteAsync(id, userId, isAdmin);
             return result switch
             {
