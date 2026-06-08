@@ -2,6 +2,7 @@ using HeavenlyKingdom.Api.Filters;
 using HeavenlyKingdom.Api.Services;
 using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -45,6 +46,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
@@ -58,6 +60,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var result = await _userService.LoginAsync(dto);
@@ -78,6 +81,7 @@ namespace HeavenlyKingdom.Api.Controllers
         }
 
         [HttpPost("logout")]
+        [UserMod]
         public IActionResult Logout()
         {
             return Ok(new { Message = "Logged out" });

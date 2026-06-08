@@ -35,5 +35,7 @@ namespace HeavenlyKingdom.Domain.Entities
 
         [InverseProperty("User")]
         public List<Indulgence> Indulgences { get; set; } = new();
+
+        public Father? Father { get; set; }
     }
 }

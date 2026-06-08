@@ -3,6 +3,7 @@ using HeavenlyKingdom.BusinessLogic.Interfaces;
 using HeavenlyKingdom.Domain.DTOs;
 using HeavenlyKingdom.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HeavenlyKingdom.Api.Controllers
 {
@@ -39,7 +40,7 @@ namespace HeavenlyKingdom.Api.Controllers
         [HttpPut("users/{id}/role")]
         public async Task<IActionResult> SetRole(int id, [FromBody] SetRoleDto dto)
         {
-            var currentUserId = HttpContext.Session.GetString("userId");
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (currentUserId == id.ToString())
                 return BadRequest(new { Message = "Нельзя изменить свою роль" });
 
@@ -63,7 +64,7 @@ namespace HeavenlyKingdom.Api.Controllers
         [HttpDelete("users/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var currentUserId = HttpContext.Session.GetString("userId");
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (currentUserId == id.ToString())
                 return BadRequest(new { Message = "Нельзя удалить свой аккаунт" });
 

@@ -19,6 +19,7 @@ namespace HeavenlyKingdom.Domain.Entities
         public int? UserId { get; set; }
 
         [ForeignKey("UserId")]
+        [InverseProperty("ChapelCandles")]
         public User? User { get; set; }
     }
 }

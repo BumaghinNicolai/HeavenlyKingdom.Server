@@ -22,10 +22,14 @@ namespace HeavenlyKingdom.Domain.Entities
         public string? Youtube { get; set; }
         public string? Facebook { get; set; }
         public string? Gmail { get; set; }
+        public string? Services { get; set; }
 
         public int? UserId { get; set; }
 
         [ForeignKey("UserId")]
         public User? User { get; set; }
+
+        [InverseProperty("Father")]
+        public List<ServiceOrder> ServiceOrders { get; set; } = new();
     }
 }

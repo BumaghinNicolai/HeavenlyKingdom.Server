@@ -4,6 +4,7 @@ using HeavenlyKingdom.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HeavenlyKingdom.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260607184950_AddFatherServices")]
+    partial class AddFatherServices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -294,8 +297,7 @@ namespace HeavenlyKingdom.DataAccess.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -598,7 +600,7 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Father", b =>
                 {
                     b.HasOne("HeavenlyKingdom.Domain.Entities.User", "User")
-                        .WithOne("Father")
+                        .WithOne()
                         .HasForeignKey("HeavenlyKingdom.Domain.Entities.Father", "UserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -697,14 +699,13 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.ServiceOrder", b =>
                 {
                     b.HasOne("HeavenlyKingdom.Domain.Entities.Father", "Father")
-                        .WithMany("ServiceOrders")
-                        .HasForeignKey("FatherId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .WithMany()
+                        .HasForeignKey("FatherId");
 
                     b.HasOne("HeavenlyKingdom.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Father");
@@ -720,11 +721,6 @@ namespace HeavenlyKingdom.DataAccess.Migrations
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Father", b =>
-                {
-                    b.Navigation("ServiceOrders");
                 });
 
             modelBuilder.Entity("HeavenlyKingdom.Domain.Entities.Order", b =>
@@ -746,8 +742,6 @@ namespace HeavenlyKingdom.DataAccess.Migrations
                     b.Navigation("Addresses");
 
                     b.Navigation("ChapelCandles");
-
-                    b.Navigation("Father");
 
                     b.Navigation("Favorites");
 

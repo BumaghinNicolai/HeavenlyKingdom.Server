@@ -20,8 +20,7 @@ namespace HeavenlyKingdom.Api.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, ((int)user.Role).ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Role, ((int)user.Role).ToString())
             };
 
             var token = new JwtSecurityToken(

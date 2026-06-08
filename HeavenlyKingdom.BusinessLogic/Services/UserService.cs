@@ -101,6 +101,7 @@ namespace HeavenlyKingdom.BusinessLogic.Services
             user.Name = dto.Name;
             user.LastName = dto.LastName;
             user.Email = dto.Email;
+            if (dto.Avatar != null) user.Avatar = dto.Avatar;
             await _repo.UpdateAsync(user);
             return _mapper.Map<UserResponseDto>(user);
         }

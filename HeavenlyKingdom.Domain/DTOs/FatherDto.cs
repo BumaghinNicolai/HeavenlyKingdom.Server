@@ -16,6 +16,7 @@ namespace HeavenlyKingdom.Domain.DTOs
         public string? Youtube { get; set; }
         public string? Facebook { get; set; }
         public string? Gmail { get; set; }
+        public string? Services { get; set; }
         public int? UserId { get; set; }
     }
 
@@ -34,6 +35,7 @@ namespace HeavenlyKingdom.Domain.DTOs
         public string? Youtube { get; set; }
         public string? Facebook { get; set; }
         public string? Gmail { get; set; }
+        public string? Services { get; set; }
     }
 
     public class UpdateFatherDto : CreateFatherDto
@@ -56,5 +58,6 @@ namespace HeavenlyKingdom.Domain.DTOs
         public string? Youtube { get; set; }
         public string? Facebook { get; set; }
         public string? Gmail { get; set; }
+        public string? Services { get; set; }
     }
 }

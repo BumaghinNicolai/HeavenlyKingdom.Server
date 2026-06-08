@@ -11,7 +11,7 @@ namespace HeavenlyKingdom.DataAccess.Configurations
             builder.HasKey(e => e.Id);
 
             builder.HasOne(f => f.User)
-                .WithOne()
+                .WithOne(u => u.Father)
                 .HasForeignKey<Father>(f => f.UserId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
