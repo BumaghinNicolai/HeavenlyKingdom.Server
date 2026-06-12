@@ -75,7 +75,8 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
-        policy.WithOrigins("http://localhost:5173")
+        policy.SetIsOriginAllowed(origin =>
+                new Uri(origin).Host == "localhost")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials());
@@ -139,6 +140,17 @@ using (var scope = app.Services.CreateScope())
             Email = "admin@heavenly.com",
             Password = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
             Role = UserRole.Admin
+        });
+        db.SaveChanges();
+    }
+
+    if (!db.DonationGoals.Any())
+    {
+        db.DonationGoals.Add(new DonationGoal
+        {
+            Title   = "На восстановление храма",
+            Target  = 100000,
+            Current = 0,
         });
         db.SaveChanges();
     }
